@@ -7342,4 +7342,66 @@ function textWidget(d){
   const box=el.querySelector('.wbox'),tx=el.querySelector('.wtext'),fs=el.querySelector('.wfont'),bg=el.querySelector('.wbg'),cols=el.querySelector('.wcols');
   box.style.width=(d.w||Math.min(620,innerWidth*.46))+'px';
   tx.innerHTML=d.html||'';
-  FONTS.fo
+  FONTS.forEach(([k,,n])=>{const o=document.createElement('option');o.value=k;o.textContent=n;o.style.fontFamily=FONTS.find(f=>f[0]===k)[1];fs.appendChild(o)});
+  WCOLS.forEach(c=>{const b=document.createElement('button');b.className='wsw';b.dataset.c=c;b.style.background=c;cols.appendChild(b)});
+  const paint=()=>{const f=FONTS.find(x=>x[0]===d.font)||FONTS[0];tx.style.fontFamily=f[1];tx.style.fontSize=d.size+'px';tx.style.color=d.color;tx.style.fontWeight=d.bold?800:500;tx.style.textAlign=d.align;
+    fs.value=f[0];el.dataset.bg=d.bg;tx.dataset.ph=t('wPh');
+    bg.innerHTML='';WBGS.forEach(k=>{const o=document.createElement('option');o.value=k;o.textContent=t('bg_'+k);bg.appendChild(o)});bg.value=d.bg;
+    cols.querySelectorAll('.wsw').forEach(b=>b.setAttribute('aria-pressed',b.dataset.c===d.color));
+    el.querySelector('.wal').innerHTML=I(d.align==='center'?'<path d="M5 6h14M8 12h8M5 18h14"/>':'<path d="M4 6h16M4 12h10M4 18h16"/>');
+    el.querySelector('.wx').title=t('wDel');el.querySelector('[data-a="b"]').setAttribute('aria-pressed',!!d.bold)};
+  el.querySelector('.wbar').addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;
+    if(b.dataset.c){d.color=b.dataset.c}
+    const a=b.dataset.a;if(a==='+')d.size=Math.min(140,Math.round(d.size*1.15));if(a==='-')d.size=Math.max(14,Math.round(d.size/1.15));if(a==='b')d.bold=!d.bold;if(a==='al')d.align=d.align==='center'?'left':'center';
+    if(a==='x'){wRemove(el,d);return}paint();saveW()});
+  fs.onchange=()=>{d.font=fs.value;paint();saveW()};bg.onchange=()=>{d.bg=bg.value;const light=d.bg==='paper'||d.bg==='note';if(light&&d.color==='#ffffff')d.color='#1f2422';if(!light&&d.color==='#1f2422')d.color='#ffffff';paint();saveW()};
+  let tm;tx.addEventListener('input',()=>{clearTimeout(tm);tm=setTimeout(()=>{d.html=tx.innerHTML;saveW()},300)});
+  tx.addEventListener('paste',e=>{e.preventDefault();document.execCommand('insertText',false,(e.clipboardData||window.clipboardData).getData('text'))});
+  new ResizeObserver(()=>{if(box.offsetWidth){d.w=box.offsetWidth;clearTimeout(tm);tm=setTimeout(saveW,300)}}).observe(box);
+  el.addEventListener('pointerdown',()=>{el.style.zIndex=++wTop});
+  wDrag(el,el.querySelector('.wbar'),d);wDrag(el,el.querySelector('.wgrip'),d);
+  el._paint=paint;paint();return {el,tx};
+}
+function symWidget(d){
+  const el=document.createElement('div');el.className='wdg wsym';
+  el.innerHTML=`<div class="wbar"><span class="wgrip" aria-hidden="true">⠿</span><button data-a="edit" class="wedit"></button><button data-a="-" class="wsm">−</button><button data-a="+">+</button><button data-a="x" class="wx">×</button></div><div class="symrow"></div><div class="sympick"></div>`;
+  document.body.appendChild(el);wPlace(el,d);
+  const row=el.querySelector('.symrow'),pick=el.querySelector('.sympick');
+  const paint=()=>{el.style.setProperty('--s',d.size+'px');
+    row.innerHTML='';d.syms.forEach(k=>{const s=SYMBY[k];if(!s)return;const tile=document.createElement('div');tile.className='symt';tile.style.setProperty('--c',s[1]);tile.innerHTML=`<i>${s[2]}</i><span></span>`;tile.querySelector('span').textContent=t('sym_'+k);row.appendChild(tile)});
+    if(!d.syms.length){const p=document.createElement('p');p.className='symhint';p.textContent=t('wSymHint');row.appendChild(p)}
+    pick.hidden=!d.edit;el.classList.toggle('editing',!!d.edit);
+    if(d.edit){pick.innerHTML='';SYMBOLS.forEach(([k,c,svg])=>{const b=document.createElement('button');b.style.setProperty('--c',c);b.setAttribute('aria-pressed',d.syms.includes(k));b.innerHTML=`<i>${svg}</i><span></span>`;b.querySelector('span').textContent=t('sym_'+k);
+      b.onclick=()=>{d.syms=d.syms.includes(k)?d.syms.filter(x=>x!==k):d.syms.concat(k);saveW();paint()};pick.appendChild(b)})}
+    el.querySelector('.wedit').textContent=t(d.edit?'wPickDone':'wPick');el.querySelector('.wx').title=t('wDel')};
+  el.querySelector('.wbar').addEventListener('click',e=>{const a=e.target.closest('button')?.dataset.a;if(!a)return;
+    if(a==='edit')d.edit=!d.edit;if(a==='+')d.size=Math.min(260,Math.round(d.size*1.2));if(a==='-')d.size=Math.max(56,Math.round(d.size/1.2));
+    if(a==='x'){wRemove(el,d);return}saveW();paint()});
+  el.addEventListener('pointerdown',()=>{el.style.zIndex=++wTop});
+  wDrag(el,el.querySelector('.wbar'),d);wDrag(el,row,d);
+  el._paint=paint;paint();return {el};
+}
+const wEls=[];
+function mountW(d){const w=d.type==='text'?textWidget(d):symWidget(d);wEls.push(w.el);return w}
+const freeY=(x0,x1)=>{let b=innerHeight*.12;document.querySelectorAll('.wdg').forEach(el=>{const r=el.getBoundingClientRect();if(r.right>x0&&r.left<x1)b=Math.max(b,r.bottom+18)});return b/innerHeight<.62?b/innerHeight:.13+(wdata.length%5)*.035};
+function addText(){const n=wdata.length;const d={type:'text',x:.06,y:freeY(innerWidth*.06,innerWidth*.52),html:'',font:'andika',size:40,color:'#ffffff',bg:'glass',align:'left',bold:false};wdata.push(d);saveW();const w=mountW(d);w.tx.focus()}
+function addSyms(){const n=wdata.length;const d={type:'sym',x:.55,y:freeY(innerWidth*.55,innerWidth*.95),syms:[],size:110,edit:true};wdata.push(d);saveW();mountW(d)}
+$('#textBtn').onclick=addText;$('#symBtn').onclick=addSyms;
+wdata.forEach(mountW);
+function repaintWidgets(){document.querySelectorAll('.wdg').forEach(el=>el._paint&&el._paint())}
+addEventListener('resize',()=>{document.querySelectorAll('.wdg').forEach((el,i)=>{const d=wdata[i];if(d)wPlace(el,d)})});
+
+addEventListener('resize',()=>{clearTimeout(window.__rz);window.__rz=setTimeout(()=>{paint();sizeFx()},120);timers.forEach(T=>{T.el.style.left=clamp(T.el.offsetLeft,0,innerWidth-T.el.offsetWidth)+'px';T.el.style.top=clamp(T.el.offsetTop,0,innerHeight-T.el.offsetHeight)+'px'})});
+
+/* ================= boot ================= */
+if(S.goal&&S.presets[S.goal]!=null)S.threshold=S.presets[S.goal];
+setThreshold(S.threshold,!!S.goal);
+setBiome(biome);applyLang();updateCount();
+for(let i=0;i<3;i++)spawn({demo:true});   // example animals that show what to expect; cleared when listening starts, never added to the collection
+requestAnimationFrame(loop);
+/* hook for automated checks: advance the simulation without waiting in real time */
+window.__qc={spawn,st,S,step,BIOMES,adventState,renderGuide,get critters(){return critters},get totals(){return totals},playMoment:()=>playMoment(biome),renderScene,setBiomeId:id=>setBiome(BYID(id))};
+})();
+</script>
+</body>
+</html>
