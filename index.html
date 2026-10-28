@@ -620,6 +620,8 @@ body.paused .critter .sprite,body.paused .critter .pose{animation-play-state:pau
         <select id="sJourney"><option value="steps" data-i18n="jSteps"></option><option value="all" data-i18n="jAll"></option></select></div>
       <div class="field"><label for="sSeason" data-i18n="seasonSet"></label>
         <select id="sSeason"><option value="off" data-i18n="seasonOnly"></option><option value="on" data-i18n="seasonAll"></option></select><p data-i18n="seasonHint"></p></div>
+      <div class="field"><label for="sSeasonW" data-i18n="szSet"></label>
+        <select id="sSeasonW"><option value="auto" data-i18n="szAuto"></option><option value="spring" data-i18n="szSpring"></option><option value="summer" data-i18n="szSummer"></option><option value="autumn" data-i18n="szAutumn"></option><option value="winter" data-i18n="szWinter"></option></select><p data-i18n="szHint"></p></div>
       <div class="field"><label for="sMax"><span data-i18n="maxOn"></span><output id="oMax"></output></label><input type="range" id="sMax" min="3" max="20"></div>
       <div class="field"><label for="sMotion" data-i18n="motion"></label>
         <select id="sMotion"><option value="on" data-i18n="motionOn"></option><option value="off" data-i18n="motionOff"></option></select></div>
@@ -2993,6 +2995,27 @@ const ART = (() => {
   A.gahammer=()=>rc14(A.shark(),{'#7d96a8':'#8a9aa6','#5f7a8e':'#6a7a88'})+E(10,52,4.6,14,'#8a9aa6')+E(8.6,52,2,12,'#6a7a88')+C(10,39.6,2,'#fff')+eye(10,39.6,1.4)+S('M7 56 Q10 58 13 56','#5a6a78',1);
   A.gaalbatross=()=>rc14(A.albatross(),{'#3a3a40':'#6e5e50','#f2c8a0':'#f2d23a'})+C(46,50,6,'#f6efd8')+P('M40 48 L26 52 L40 53Z','#f2d23a')+eye(45,48,1.4);
 
+  /* the flounder lies in a shallow tide pool on the mudflat */
+  {const fl=A.flounder;A.flounder=()=>E(62,84,56,11,'rgba(120,160,180,.55)')+E(58,82,46,7,'rgba(170,205,220,.5)')+fl()+S('M30 78 Q44 75 58 78','rgba(255,255,255,.55)',1.2)+S('M76 90 Q90 88 104 90','rgba(255,255,255,.45)',1)}
+
+  /* far out in the sea: only the porpoise's back and fin show above the water */
+  A.porpoise=()=>E(58,61,54,5,'rgba(110,160,190,.45)')+P('M16 58 Q22 41 52 39.4 Q84 40.4 98 52 L100 58Z','#4e5866')+P('M56 40 L64 27 L70 40Z','#3e4652')+S('M30 44 Q52 40 80 44','rgba(255,255,255,.18)',1.6)+eye(26,49,1.8)+S('M6 58 Q18 55 30 58 Q42 61 54 58 Q68 55 82 58 Q94 61 108 58','rgba(255,255,255,.8)',1.6)+S('M12 63 Q24 61 36 63 M70 63 Q84 61 96 63','rgba(255,255,255,.5)',1.1);
+
+  /* ================= the apple tree through the seasons: visitors ================= */
+  // spring
+  A.szbee=()=>A.honeybee();A.szbumble=()=>A.bumblebee();A.szbrimstone=()=>A.brimstone();A.szstarling=()=>A.starling();
+  A.szbluetit=()=>A.bluetit();A.szcuckoo=()=>A.cuckoo();A.szhoopoe=()=>A.hoopoe();
+  // summer: the hedgehog has found an apple
+  A.szhedgehog=()=>A.hedgehog()+C(60,62,6.4,'#d8352a')+C(58,60,2,'rgba(255,255,255,.5)')+S('M60 56 L61 52','#5a3a20',1.4)+P('M61 53 Q65 50 67 53 Q64 55 61 54Z','#6aa040');
+  A.szswallow=()=>A.swallow();A.szladybird=()=>A.ladybird();A.szcricket=()=>A.wicricket();
+  A.szdragonfly=()=>A.dragonfly();A.szwoodpecker=()=>A.woodpecker();A.szlittleowl=()=>A.littleowl();
+  // autumn
+  A.szsquirrel=()=>A.squirrel();A.szfieldmouse=()=>A.woodmouse()+C(28,84,4.6,'#c8281e')+C(27,83,1.4,'rgba(255,255,255,.5)');A.szfieldfare=()=>A.fieldfare();A.szsnail=()=>A.gardensnail();
+  A.szdeer=()=>A.deer();A.szfox=()=>A.fox();A.szcrane=()=>A.crane();
+  // winter
+  A.szrobin=()=>A.robin();A.szbullfinch=()=>A.bullfinch();A.szgreattit=()=>A.greattit();A.szhare=()=>A.wrabbit();
+  A.szwaxwing=()=>A.waxwing();A.szwfox=()=>A.wfox();A.szlongowl=()=>A.longowl();
+
   const cache={};
   /* soft volume: every filled shape gets a gentle light-from-above gradient on top of its own colour */
   try{if(!document.getElementById('qcShDefs')){const d=document.createElement('div');d.id='qcShDefs';d.style.cssText='position:absolute;width:0;height:0;overflow:hidden';
@@ -4115,6 +4138,95 @@ Object.assign(ANIMAL_TEXT.de,{
 Object.assign(STR.en,{pvSet:'Try it out',pvAll:'Show all animals of this world',pvMoment:'Play the special moment',pvClear:'Clear test animals',pvHint:'Only a preview: nothing is added to the collection, and the test animals disappear when you start listening.'});
 Object.assign(STR.de,{pvSet:'Ausprobieren',pvAll:'Alle Tiere dieser Welt zeigen',pvMoment:'Besonderen Moment abspielen',pvClear:'Test-Tiere wegräumen',pvHint:'Nur zur Vorschau: Es wird nichts in die Sammlung eingetragen, und die Test-Tiere verschwinden, sobald ihr „Zuhören starten“ drückt.'});
 
+
+/* ---------- The apple tree through the seasons ---------- */
+(()=>{
+  const SN={en:{spring:'in spring',summer:'in summer',autumn:'in autumn',winter:'in winter'},de:{spring:'im Frühling',summer:'im Sommer',autumn:'im Herbst',winter:'im Winter'}};
+  const se=()=>typeof curSeason==='function'?curSeason():'spring';
+  Object.defineProperty(BIOME_NAMES.en,'seasons',{get:()=>'The apple tree '+SN.en[se()],enumerable:true,configurable:true});
+  Object.defineProperty(BIOME_NAMES.de,'seasons',{get:()=>'Der Apfelbaum '+SN.de[se()],enumerable:true,configurable:true});
+  const MT={
+    en:{spring:['Blossom snow','A single apple tree can have tens of thousands of blossoms. Bees carry pollen from flower to flower, and only then can apples grow.'],
+        summer:['Fireflies','Fireflies make light with their bodies without getting warm. They flash to find each other on summer nights.'],
+        autumn:['Autumn wind','Trees pull the green colour out of their leaves in autumn and store it. The yellow and red colours were hidden underneath all along.'],
+        winter:['The first snow','Every snowflake has six arms, and no two are exactly alike.']},
+    de:{spring:['Blütenschnee','Ein einziger Apfelbaum kann Zehntausende Blüten haben. Bienen tragen den Pollen von Blüte zu Blüte, erst dann können Äpfel wachsen.'],
+        summer:['Glühwürmchen','Glühwürmchen erzeugen Licht, ohne dabei warm zu werden. Sie blinken, um sich in Sommernächten zu finden.'],
+        autumn:['Herbstwind','Im Herbst holen Bäume das Grün aus ihren Blättern zurück und speichern es. Das Gelb und Rot war die ganze Zeit darunter versteckt.'],
+        winter:['Der erste Schnee','Jede Schneeflocke hat sechs Arme, und keine gleicht genau der anderen.']}};
+  Object.defineProperty(MOMENT_TEXT.en,'seasons',{get:()=>MT.en[se()],enumerable:true,configurable:true});
+  Object.defineProperty(MOMENT_TEXT.de,'seasons',{get:()=>MT.de[se()],enumerable:true,configurable:true});
+  const tree=(crown,ground,extra)=>`<rect x="0" y="0" width="120" height="100" fill="${ground[0]}"/><rect x="0" y="70" width="120" height="30" fill="${ground[1]}"/><path d="M56 92 Q58 72 56 56 L64 56 Q62 72 66 92Z" fill="#6e5440"/><path d="M60 60 Q46 50 36 44 M60 58 Q76 48 86 46 M60 56 L60 36" stroke="#6e5440" stroke-width="3" fill="none" stroke-linecap="round"/>${crown}${extra||''}`;
+  const AR={
+    spring:tree('<g fill="#fbe0ea"><circle cx="40" cy="40" r="14"/><circle cx="60" cy="28" r="17"/><circle cx="82" cy="40" r="14"/><circle cx="60" cy="46" r="14"/></g><g fill="#fff"><circle cx="36" cy="36" r="3"/><circle cx="58" cy="22" r="3"/><circle cx="80" cy="36" r="3"/><circle cx="66" cy="44" r="3"/></g>',['#cfe6f4','#9cd06a'],'<g fill="#f8c8da"><ellipse cx="20" cy="20" rx="2.6" ry="1.6"/><ellipse cx="100" cy="30" rx="2.6" ry="1.6"/><ellipse cx="30" cy="62" rx="2.6" ry="1.6"/><ellipse cx="92" cy="66" rx="2.6" ry="1.6"/></g>'),
+    summer:tree('<g fill="#4a8034"><circle cx="40" cy="40" r="15"/><circle cx="60" cy="28" r="18"/><circle cx="82" cy="40" r="15"/><circle cx="60" cy="46" r="15"/></g><g fill="#d8352a"><circle cx="44" cy="44" r="3"/><circle cx="62" cy="32" r="3"/><circle cx="78" cy="44" r="3"/></g>',['#3a3a6a','#4e7a3a'],'<g fill="#e8ff8a"><circle cx="20" cy="60" r="2"/><circle cx="96" cy="54" r="2"/><circle cx="30" cy="80" r="2"/><circle cx="104" cy="78" r="2"/></g>'),
+    autumn:tree('<g fill="#e8a030"><circle cx="40" cy="40" r="13"/><circle cx="60" cy="28" r="15"/></g><g fill="#c8582a"><circle cx="82" cy="40" r="13"/><circle cx="60" cy="46" r="13"/></g>',['#f2dcb4','#a8a058'],'<g fill="#c8281e"><ellipse cx="18" cy="30" rx="4" ry="2" transform="rotate(30 18 30)"/><ellipse cx="102" cy="22" rx="4" ry="2" transform="rotate(-20 102 22)"/></g><g fill="#f2c84a"><ellipse cx="96" cy="60" rx="4" ry="2"/><ellipse cx="24" cy="56" rx="4" ry="2" transform="rotate(50 24 56)"/></g>'),
+    winter:tree('<path d="M36 44 Q48 50 60 58 M86 46 Q72 50 60 56 M60 36 L60 56" stroke="#fff" stroke-width="1.6" fill="none"/>',['#c8d6e4','#f4f8fb'],'<g fill="#fff"><circle cx="16" cy="16" r="2"/><circle cx="40" cy="12" r="1.6"/><circle cx="86" cy="18" r="2"/><circle cx="104" cy="40" r="1.6"/><circle cx="28" cy="34" r="1.6"/><circle cx="70" cy="10" r="1.8"/></g>')};
+  Object.defineProperty(MOMENT_ART,'seasons',{get:()=>AR[se()],enumerable:true,configurable:true});
+})();
+Object.assign(ANIMAL_TEXT.en,{
+  szbee:['Honeybee','To make one jar of honey, bees fly about as far as three times around the Earth.'],
+  szbumble:['Bumblebee','Bumblebees can fly even when it is cold, because they warm up by shivering their flight muscles.'],
+  szbrimstone:['Brimstone butterfly','The brimstone is often the first butterfly of the year. It spends the winter as an adult hidden in the bushes.'],
+  szstarling:['Starling','In spring, starlings look for worms and beetles in the grass under the fruit trees.'],
+  szbluetit:['Blue tit','Blue tits like to nest in holes in old apple trees and feed their chicks hundreds of caterpillars a day.'],
+  szcuckoo:['Cuckoo','The cuckoo lays its eggs in other birds’ nests, and they raise its chick.'],
+  szhoopoe:['Hoopoe','The hoopoe has a crown of feathers that it raises when it is excited.'],
+  szhedgehog:['Hedgehog','Hedgehogs like fallen fruit, but they mostly eat beetles, worms and snails.'],
+  szswallow:['Swallow','Swallows catch insects while flying and even drink by skimming over the water.'],
+  szladybird:['Ladybird','Ladybirds protect the apple tree because they eat the aphids on its leaves.'],
+  szcricket:['Field cricket','The cricket’s song is louder when it is warm, so you hear it best on summer evenings.'],
+  szdragonfly:['Dragonfly','Dragonflies can fly forwards, backwards and stand still in the air.'],
+  szwoodpecker:['Great spotted woodpecker','The woodpecker drums on wood up to 20 times a second without getting a headache.'],
+  szlittleowl:['Little owl','Little owls love old orchards and often nest in holes in old apple trees.'],
+  szsquirrel:['Red squirrel','Squirrels hide thousands of nuts in autumn. The ones they forget can grow into new trees.'],
+  szfieldmouse:['Wood mouse','Wood mice collect fallen apples and seeds as a store for the winter.'],
+  szfieldfare:['Fieldfare','Fieldfares come from the north in autumn and love eating the apples left on the ground.'],
+  szsnail:['Garden snail','A snail can sleep for months. It closes its shell with a lid made of slime.'],
+  szdeer:['Roe deer','Roe deer come to orchards at dusk to eat fallen apples.'],
+  szfox:['Red fox','Foxes hear a mouse squeak from about 100 metres away.'],
+  szcrane:['Common crane','Cranes fly south in big V formations in autumn, calling loudly.'],
+  szrobin:['Robin','Robins sing even in winter, to keep their own patch of garden.'],
+  szbullfinch:['Bullfinch','The bullfinch’s red chest looks like a little apple in the bare winter tree.'],
+  szgreattit:['Great tit','In winter, great tits like to visit bird feeders, often in small groups.'],
+  szhare:['Brown hare','In the snow you can see the hare’s tracks: two long back feet in front of two small front feet.'],
+  szwaxwing:['Waxwing','Waxwings come from the far north in some winters and eat the last apples and berries.'],
+  szwfox:['Fox in winter','In winter the fox grows a thick coat and curls its bushy tail around its nose to sleep.'],
+  szlongowl:['Long-eared owl','In winter, long-eared owls often sleep together in groups in trees.']
+});
+Object.assign(ANIMAL_TEXT.de,{
+  szbee:['Honigbiene','Für ein einziges Glas Honig fliegen Bienen ungefähr dreimal um die Erde.'],
+  szbumble:['Hummel','Hummeln können auch bei Kälte fliegen, weil sie sich durch Zittern ihrer Flugmuskeln aufwärmen.'],
+  szbrimstone:['Zitronenfalter','Der Zitronenfalter ist oft der erste Schmetterling im Jahr. Er überwintert als Falter versteckt im Gebüsch.'],
+  szstarling:['Star','Im Frühling suchen Stare im Gras unter den Obstbäumen nach Würmern und Käfern.'],
+  szbluetit:['Blaumeise','Blaumeisen brüten gern in Höhlen alter Apfelbäume und füttern ihre Küken mit Hunderten Raupen am Tag.'],
+  szcuckoo:['Kuckuck','Der Kuckuck legt seine Eier in fremde Nester, und andere Vögel ziehen sein Küken groß.'],
+  szhoopoe:['Wiedehopf','Der Wiedehopf hat eine Federhaube, die er aufstellt, wenn er aufgeregt ist.'],
+  szhedgehog:['Igel','Igel mögen Fallobst, fressen aber vor allem Käfer, Würmer und Schnecken.'],
+  szswallow:['Rauchschwalbe','Schwalben fangen Insekten im Flug und trinken sogar im Vorbeifliegen über dem Wasser.'],
+  szladybird:['Marienkäfer','Marienkäfer schützen den Apfelbaum, denn sie fressen die Blattläuse auf seinen Blättern.'],
+  szcricket:['Feldgrille','Wenn es warm ist, zirpt die Grille lauter. Deshalb hört man sie an Sommerabenden am besten.'],
+  szdragonfly:['Libelle','Libellen können vorwärts und rückwärts fliegen und in der Luft stehen bleiben.'],
+  szwoodpecker:['Buntspecht','Der Buntspecht trommelt bis zu 20-mal pro Sekunde auf Holz, ohne Kopfschmerzen zu bekommen.'],
+  szlittleowl:['Steinkauz','Der Steinkauz liebt alte Streuobstwiesen und brütet oft in Höhlen alter Apfelbäume.'],
+  szsquirrel:['Eichhörnchen','Eichhörnchen verstecken im Herbst Tausende Nüsse. Die vergessenen können zu neuen Bäumen wachsen.'],
+  szfieldmouse:['Waldmaus','Waldmäuse sammeln Fallobst und Samen als Vorrat für den Winter.'],
+  szfieldfare:['Wacholderdrossel','Wacholderdrosseln kommen im Herbst aus dem Norden und fressen gern die Äpfel, die am Boden liegen.'],
+  szsnail:['Weinbergschnecke','Eine Schnecke kann monatelang schlafen. Dafür verschließt sie ihr Haus mit einem Deckel aus Schleim.'],
+  szdeer:['Reh','Rehe kommen in der Dämmerung auf die Obstwiese, um Fallobst zu fressen.'],
+  szfox:['Rotfuchs','Ein Fuchs hört eine Maus noch aus etwa 100 Metern Entfernung piepsen.'],
+  szcrane:['Kranich','Im Herbst ziehen Kraniche laut rufend in großen V-Formationen nach Süden.'],
+  szrobin:['Rotkehlchen','Rotkehlchen singen sogar im Winter, um ihr eigenes Gartenstück zu behalten.'],
+  szbullfinch:['Gimpel','Die rote Brust des Gimpels sieht im kahlen Winterbaum aus wie ein kleiner Apfel.'],
+  szgreattit:['Kohlmeise','Im Winter besuchen Kohlmeisen gern Futterhäuschen, oft in kleinen Gruppen.'],
+  szhare:['Feldhase','Im Schnee sieht man die Spur des Hasen: zwei lange Hinterpfoten vor zwei kleinen Vorderpfoten.'],
+  szwaxwing:['Seidenschwanz','In manchen Wintern kommen Seidenschwänze aus dem hohen Norden und fressen die letzten Äpfel und Beeren.'],
+  szwfox:['Fuchs im Winter','Im Winter bekommt der Fuchs ein dickes Fell und wickelt beim Schlafen den buschigen Schwanz um seine Nase.'],
+  szlongowl:['Waldohreule','Im Winter schlafen Waldohreulen oft in Gruppen zusammen in den Bäumen.']
+});
+Object.assign(STR.en,{szSet:'Season of the apple tree',szAuto:'Follow the calendar',szSpring:'Always spring',szSummer:'Always summer',szAutumn:'Always autumn',szWinter:'Always winter',szHint:'The apple tree world changes with the real seasons. Here you can look at any season straight away.'});
+Object.assign(STR.de,{szSet:'Jahreszeit beim Apfelbaum',szAuto:'Nach dem Kalender',szSpring:'Immer Frühling',szSummer:'Immer Sommer',szAutumn:'Immer Herbst',szWinter:'Immer Winter',szHint:'Die Apfelbaum-Welt ändert sich mit den echten Jahreszeiten. Hier kannst du jede Jahreszeit sofort ansehen.'});
+
 </script>
 <script>
 (() => {
@@ -4127,7 +4239,7 @@ const store = {
 const NOW=()=>window.__qcNow?new Date(window.__qcNow):new Date();
 const DEFAULT_PRESETS={silent:25,whisper:45,partner:65};
 const S = Object.assign({threshold:45,goal:'whisper',presets:{...DEFAULT_PRESETS},sens:50,pace:'normal',paceMin:4,loudK:'normal',loudMode:'run',max:10,showNum:'on',chime:'on',
-  weekGoal:60,journey:'steps',autoHide:'on',motion:'on',seasonAll:'off',lang:(navigator.language||'en').toLowerCase().startsWith('de')?'de':'en'}, store.get('settings',{}));
+  weekGoal:60,journey:'steps',autoHide:'on',motion:'on',seasonAll:'off',seasonW:'auto',lang:(navigator.language||'en').toLowerCase().startsWith('de')?'de':'en'}, store.get('settings',{}));
 if(!['run','pause'].includes(S.loudMode))S.loudMode='run';
 if(!S.presets||typeof S.presets!=='object')S.presets={...DEFAULT_PRESETS};
 if(!STR[S.lang])S.lang='en';
@@ -4157,7 +4269,7 @@ const BIOMES = [
  {id:'cretaceous',icon:'sauropod',tint:'#efd8ae',zone:[.66,.82],haze:'#9c8a84',animals:[
    ['lizard','c','stand',.6],['frog','c','stand',.55],['rivturtle','c','stand',.7],['cricket','c','stand',.5],
    ['ichthy','u','fly',.65,[.2,.42]],['deino','u','stand',1.35],['sauropod','u','stand',1.9],['trex','r','stand',1.85],
-   ['mammal','c','stand',.45],['dragonfly','c','fly',.5,[.3,.6]],['raptor','c','stand',.95],['triceratops','u','stand',1.6],['ankylo','u','stand',1.45],['quetzal','r','fly',1.7,[.14,.36]]]},
+   ['mammal','c','stand',.45],['dragonfly','c','fly',.5,[.3,.6]],['raptor','c','stand',.95],['triceratops','u','stand',1.6],['ankylo','u','stand',1.45],['quetzal','r','fly',1.7,[.24,.4]]]},
  {id:'woodland',icon:'fox',tint:'#d5e8bf',zone:[.66,.82],haze:'#d3dacb',animals:[
    ['squirrel','c','stand',.7],['wrabbit','c','stand',.7],['hedgehog','c','stand',.6],['robin','c','fly',.5,[.22,.45]],
    ['badger','u','stand',.85],['fox','u','stand',.9],['deer','u','stand',1.3],['owl','r','fly',.85,[.2,.4]],
@@ -4172,16 +4284,16 @@ const BIOMES = [
    ['puffin','c','stand',.6],['lemming','c','stand',.4],['tern','c','fly',.5,[.18,.4]],['walrus','u','stand',1.4],['muskox','u','stand',1.25],['narwhal','r','swim',1.1,[.62,.645]]]},
  {id:'antarctica',icon:'adelie',tint:'#e0ecf6',zone:[.69,.82],haze:'#eef4fa',animals:[
    ['adelie','c','stand',.75],['chinstrap','c','stand',.75],['weddell','c','stand',1.1],['snowpetrel','c','fly',.55,[.18,.42]],['krill','c','swim',.45,[.6,.645]],['icefish','c','swim',.5,[.6,.645]],['skua','c','fly',.6,[.18,.4]],
-   ['emperor','u','stand',1.0],['leopardseal','u','stand',1.25],['albatross','u','fly',1.2,[.15,.35]],['eleseal','u','stand',1.4],['orca','u','swim',1.0,[.62,.645]],
-   ['bluewhale','r','swim',1.35,[.625,.645]],['colossal','r','swim',.9,[.62,.645]]]},
+   ['emperor','u','stand',1.0],['leopardseal','u','stand',1.25],['albatross','u','fly',1.2,[.15,.35]],['eleseal','u','stand',1.4],['orca','u','swim',1.0,[.645,.655]],
+   ['bluewhale','r','swim',1.35,[.655,.66]],['colossal','r','swim',.9,[.62,.645]]]},
  {id:'alps',icon:'marmot',tint:'#dcecd2',zone:[.66,.82],haze:'#e8eef0',animals:[
    ['marmot','c','stand',.65],['chough','c','fly',.55,[.2,.45]],['mhare','c','stand',.7],['salamander','c','stand',.5],['stoat','c','stand',.7],['ptarmigan','c','stand',.6],['apollo','c','fly',.5,[.3,.55]],
    ['ibex','u','stand',1.25],['chamois','u','stand',1.15],['reddeer','u','stand',1.4],['grouse','u','stand',.75],['mlizard','u','stand',.55],
-   ['goldeagle','r','fly',1.3,[.12,.32]],['beardvulture','r','fly',1.35,[.12,.32]]]},
+   ['goldeagle','r','fly',1.3,[.2,.36]],['beardvulture','r','fly',1.35,[.2,.36]]]},
  {id:'wadden',icon:'hseal',tint:'#e8e2d2',zone:[.68,.82],haze:'#d8dcd8',animals:[
-   ['shorecrab','c','stand',.55],['lugworm','c','stand',.5],['mussel','c','stand',.45],['shrimp','c','stand',.45],['oystercatcher','c','stand',.7],['gull','c','fly',.6,[.15,.4]],['cockle','c','stand',.4],
-   ['hseal','u','stand',1.1],['greyseal','u','stand',1.25],['avocet','u','stand',.8],['shelduck','u','stand',.75],['flounder','u','swim',.5,[.56,.575]],
-   ['porpoise','r','swim',.6,[.553,.56]],['seaeagle','r','fly',1.25,[.12,.32]]]},
+   ['shorecrab','c','stand',.55,null,[.28,.97]],['lugworm','c','stand',.5,null,[.28,.97]],['mussel','c','stand',.45,null,[.28,.97]],['shrimp','c','stand',.45,null,[.28,.97]],['oystercatcher','c','stand',.7],['gull','c','fly',.6,[.15,.4]],['cockle','c','stand',.4,null,[.28,.97]],
+   ['hseal','u','stand',1.1],['greyseal','u','stand',1.25],['avocet','u','stand',.8],['shelduck','u','stand',.75],['flounder','u','stand',.55,[.63,.8],[.3,.97]],
+   ['porpoise','r','swim',.6,[.579,.584],[.3,.95]],['seaeagle','r','fly',1.25,[.2,.36]]]},
  {id:'pond',icon:'mallard',tint:'#d8ecd8',zone:[.68,.82],haze:'#dce8dc',animals:[
    ['pfrog','c','stand',.55],['ptoad','c','stand',.55],['damselfly','c','fly',.5,[.3,.6]],['strider','c','stand',.5,[.72,.78],[.25,.75]],['pondsnail','c','stand',.5],['newt','c','stand',.55],['mallard','c','stand',.75,[.72,.77],[.25,.75]],
    ['heron','u','stand',1.25],['kingfisher','u','fly',.6,[.25,.5]],['grasssnake','u','stand',.85],['divebeetle','u','stand',.45,[.72,.78],[.25,.75]],['watervole','u','stand',.5],
@@ -4196,7 +4308,7 @@ const BIOMES = [
    ['barnowl','r','fly',.8,[.2,.4]],['wstork','r','stand',1.25]]},
  {id:'newzealand',icon:'kiwi',tint:'#d4e6dc',zone:[.72,.84],haze:'#dde6e4',animals:[
    ['pukeko','c','stand',.8],['tui','c','fly',.55,[.2,.45]],['fantail','c','fly',.5,[.25,.5]],['weta','c','stand',.5],['nzseal','c','stand',1.0],['kereru','c','fly',.65,[.2,.45]],['nzgecko','c','stand',.5],
-   ['kea','u','stand',.75],['tuatara','u','stand',.75],['morepork','u','fly',.75,[.2,.4]],['hoiho','u','stand',.8],['hector','u','swim',.75,[.6,.66]],
+   ['kea','u','stand',.75],['tuatara','u','stand',.75],['morepork','u','fly',.75,[.2,.4]],['hoiho','u','stand',.8],['hector','u','swim',.75,[.665,.69]],
    ['kiwi','r','stand',.75],['kakapo','r','stand',.85]]},
  {id:'schoolyard',icon:'sparrow',tint:'#dce8f2',zone:[.7,.86],haze:'#d8dce0',animals:[
    ['sparrow','c','stand',.5],['greattit','c','fly',.5,[.22,.5]],['magpie','c','stand',.75],['pigeon','c','stand',.65],['chaffinch','c','fly',.5,[.22,.5]],['earthworm','c','stand',.5],['woodlouse','c','stand',.4],
@@ -4217,7 +4329,7 @@ const BIOMES = [
    ['iasabre','r','stand',1.2],['iaglypto','r','stand',1.15]]},
  {id:'australia',icon:'aukanga',tint:'#f4e0cc',zone:[.68,.86],haze:'#f0dcc4',animals:[
    ['aukanga','c','stand',1.25],['aukoala','c','stand',.85],['aukookaburra','c','fly',.65,[.2,.42]],['augalah','c','fly',.6,[.18,.45]],['aulorikeet','c','fly',.55,[.22,.48]],['auwombat','c','stand',.9],['auemu','c','stand',1.45],
-   ['auechidna','u','stand',.7],['auplatypus','u','swim',.65,[.8,.83],[.4,.6]],['aufrilled','u','stand',.75],['audingo','u','stand',1.0],['auquokka','u','stand',.65],['ausugar','u','fly',.6,[.25,.45]],
+   ['auechidna','u','stand',.7],['auplatypus','u','swim',.65,[.83,.845],[.42,.58]],['aufrilled','u','stand',.75],['audingo','u','stand',1.0],['auquokka','u','stand',.65],['ausugar','u','fly',.6,[.25,.45]],
    ['audevil','r','stand',.8],['aucassowary','r','stand',1.45]]},
  {id:'desert',icon:'defennec',tint:'#f6e6c8',zone:[.72,.87],haze:'#f2e2c4',animals:[
    ['dedromedary','c','stand',1.6],['defennec','c','stand',.75],['dejerboa','c','stand',.5],['descarab','c','stand',.55],['descorpion','c','stand',.6],['desandgrouse','c','stand',.6],['deuromastyx','c','stand',.7],
@@ -4225,8 +4337,17 @@ const BIOMES = [
    ['desandcat','r','stand',.7],['decaracal','r','stand',.95]]},
  {id:'galapagos',icon:'gabooby',tint:'#d8eef0',zone:[.74,.88],haze:'#dcecee',animals:[
    ['gatortoise','c','stand',1.3],['gamarine','c','stand',.8],['gabooby','c','stand',.75],['gasealion','c','stand',1.1],['gacrab','c','stand',.5],['gafinch','c','fly',.45,[.25,.45]],['galava','c','stand',.55],
-   ['galand','u','stand',.85],['gapenguin','u','stand',.6],['gafrigate','u','fly',.85,[.12,.32]],['gacormorant','u','stand',.75],['gaseaturtle','u','swim',.8,[.55,.63]],
-   ['gahammer','r','swim',1.0,[.55,.62]],['gaalbatross','r','fly',1.0,[.12,.3]]]},
+   ['galand','u','stand',.85],['gapenguin','u','stand',.6],['gafrigate','u','fly',.85,[.12,.32]],['gacormorant','u','stand',.75],['gaseaturtle','u','swim',.8,[.62,.66],[.28,.75]],
+   ['gahammer','r','swim',1.0,[.63,.67],[.28,.75]],['gaalbatross','r','fly',1.0,[.12,.3]]]},
+ {id:'seasons',icon:'szsquirrel',tint:'#e6eed8',zone:[.72,.87],haze:'#e8ece4',animals:[
+   ['szbee','c','fly',.45,[.25,.55],null,'spring'],['szbumble','c','fly',.5,[.3,.6],null,'spring'],['szbrimstone','c','fly',.5,[.25,.55],null,'spring'],['szstarling','c','stand',.55,null,null,'spring'],
+   ['szbluetit','u','fly',.5,[.2,.45],null,'spring'],['szcuckoo','u','fly',.6,[.15,.4],null,'spring'],['szhoopoe','r','fly',.65,[.2,.45],null,'spring'],
+   ['szhedgehog','c','stand',.6,null,null,'summer'],['szswallow','c','fly',.6,[.12,.38],null,'summer'],['szladybird','c','stand',.4,null,null,'summer'],['szcricket','c','stand',.55,null,null,'summer'],
+   ['szdragonfly','u','fly',.5,[.3,.6],null,'summer'],['szwoodpecker','u','fly',.55,[.2,.45],null,'summer'],['szlittleowl','r','fly',.7,[.2,.42],null,'summer'],
+   ['szsquirrel','c','stand',.7,null,null,'autumn'],['szfieldmouse','c','stand',.45,null,null,'autumn'],['szfieldfare','c','fly',.55,[.18,.45],null,'autumn'],['szsnail','c','stand',.5,null,null,'autumn'],
+   ['szdeer','u','stand',1.25,null,null,'autumn'],['szfox','u','stand',.9,null,null,'autumn'],['szcrane','r','stand',1.3,null,null,'autumn'],
+   ['szrobin','c','fly',.5,[.22,.45],null,'winter'],['szbullfinch','c','fly',.55,[.22,.48],null,'winter'],['szgreattit','c','fly',.5,[.22,.48],null,'winter'],['szhare','c','stand',.7,null,null,'winter'],
+   ['szwaxwing','u','fly',.55,[.2,.45],null,'winter'],['szwfox','u','stand',.9,null,null,'winter'],['szlongowl','r','fly',.8,[.2,.4],null,'winter']]},
  {id:'halloween',icon:'jacksprite',tint:'#3a3354',zone:[.68,.82],haze:'#3a2f4a',night:1,season:{from:[10,15],to:[11,5]},animals:[
    ['bat','c','fly',.75,[.15,.45]],['blackcat','c','stand',.75],['spider','c','fly',.55,[.2,.5]],['crow','c','stand',.7],['mothh','c','fly',.5,[.2,.55]],['hhedgehog','c','stand',.6],['pumpkinmouse','c','stand',.6],
    ['longowl','u','fly',.85,[.2,.4]],['raven','u','stand',.8],['hfox','u','stand',.9],['jacksprite','u','stand',.75],['toad','u','stand',.55],
@@ -4235,7 +4356,7 @@ const BIOMES = [
    ['goose','c','stand',.9],['gosling','c','stand',.5],['dormouse','c','stand',.5],['fieldmouse','c','stand',.42],['gardensnail','c','stand',.5],['glowworm','c','stand',.45],['firesal','c','stand',.6],
    ['whitehorse','u','stand',1.5],['littleowl','u','fly',.7,[.22,.42]],['redkite','u','fly',.8,[.15,.4]],['fieldfare','u','fly',.55,[.18,.45]],['lanternmoth','u','fly',.6,[.25,.55]],
    ['crane','r','stand',1.3],['lanternbeetle','r','stand',.6]]},
- {id:'winter',icon:'snowman',tint:'#dde8f4',zone:[.66,.82],haze:'#eef3f8',season:{from:[12,1],to:[1,6]},animals:[
+ {id:'winter',icon:'snowman',tint:'#dde8f4',zone:[.73,.9],haze:'#eef3f8',season:{from:[12,1],to:[1,6]},animals:[
    ['bullfinch','c','fly',.55,[.22,.5]],['bluetit','c','fly',.5,[.22,.5]],['waxwing','c','fly',.55,[.22,.5]],['wren','c','fly',.45,[.3,.55]],['snowhare','c','stand',.7],['gingermouse','c','stand',.45],['snowman','c','stand',.9],
    ['reindeer','u','stand',1.3],['moose','u','stand',1.5],['wfox','u','stand',.9],['donkey','u','stand',1.3],['treesprite','u','stand',.8],
    ['whitestag','r','stand',1.35],['starbird','r','fly',.7,[.18,.4]]]},
@@ -4247,12 +4368,22 @@ const BIOMES = [
    ['ehare','c','stand',.75],['lamb','c','stand',.85],['chick','c','stand',.45],['duckling','c','stand',.45],['bumblebee','c','fly',.45,[.3,.6]],['brimstone','c','fly',.5,[.25,.55]],['blackbird','c','fly',.55,[.25,.5]],
    ['stork','u','stand',1.3],['cuckoo','u','fly',.6,[.18,.4]],['swallow','u','fly',.6,[.15,.4]],['fawn','u','stand',1.0],['honeybee','u','fly',.4,[.3,.6]],
    ['goldhare','r','stand',.8],['hoopoe','r','fly',.65,[.25,.5]]]}
-].map(b => ({...b, animals: b.animals.map(([id,r,m,s,z,xr]) => ({id,r,m,s,z:z||null,xr:xr||null,biome:b.id}))}));
-const JOURNEY=['savanna','woodland','reef','rainforest','arctic','cretaceous','space','antarctica','alps','wadden','pond','deepsea','farm','newzealand','meadow','underground','iceage','australia','desert','galapagos'];
-const BABY=new Set(['zebra','giraffe','warthog','buffalo','elephant','hippo','rhino','leopard','rabbit','rivturtle','sauropod','deino','squirrel','wrabbit','hedgehog','badger','fox','deer','monkey','jaguar','seal','afox','hare','caribou','polar','frog','dartfrog','iguana','lizard','meerkat','wildebeest','cheetah','lion','ostrich','flamingo','tortoise','mammal','raptor','triceratops','ankylo','woodmouse','boar','marten','lynx','tapir','orangutan','gorilla','treefrog','puffin','lemming','walrus','muskox','blackcat','hhedgehog','pumpkinmouse','hfox','toad','goose','dormouse','fieldmouse','whitehorse','crane','firesal','snowhare','reindeer','moose','wfox','donkey','whitestag','raccoon','poodle','unicorn','ehare','lamb','fawn','goldhare','adelie','chinstrap','emperor','weddell','leopardseal','eleseal','marmot','mhare','stoat','ibex','chamois','reddeer','hseal','greyseal','shelduck','otter','beaver','watervole','pfrog','mallard','hen','sheep','pig','frabbit','cow','fgoat','fhorse','fdonkey','barncat','ughamster','ugshrew','wihare','wiquail','wilizard','iamammoth','iahorse','iabison','iarhino','iacavebear','iawolf','aukanga','aukoala','auwombat','audingo','auemu','auquokka','dedromedary','defennec','degazelle','deaddax','gatortoise','gasealion','galand','gamarine']);
+].map(b => ({...b, animals: b.animals.map(([id,r,m,s,z,xr,season]) => ({id,r,m,s,z:z||null,xr:xr||null,season:season||null,biome:b.id}))}));
+const JOURNEY=['savanna','woodland','reef','rainforest','arctic','cretaceous','space','antarctica','alps','wadden','pond','deepsea','farm','newzealand','meadow','underground','iceage','australia','desert','galapagos','seasons'];
+const BABY=new Set(['zebra','giraffe','warthog','buffalo','elephant','hippo','rhino','leopard','rabbit','rivturtle','sauropod','deino','squirrel','wrabbit','hedgehog','badger','fox','deer','monkey','jaguar','seal','afox','hare','caribou','polar','frog','dartfrog','iguana','lizard','meerkat','wildebeest','cheetah','lion','ostrich','flamingo','tortoise','mammal','raptor','triceratops','ankylo','woodmouse','boar','marten','lynx','tapir','orangutan','gorilla','treefrog','puffin','lemming','walrus','muskox','blackcat','hhedgehog','pumpkinmouse','hfox','toad','goose','dormouse','fieldmouse','whitehorse','crane','firesal','snowhare','reindeer','moose','wfox','donkey','whitestag','raccoon','poodle','unicorn','ehare','lamb','fawn','goldhare','adelie','chinstrap','emperor','weddell','leopardseal','eleseal','marmot','mhare','stoat','ibex','chamois','reddeer','hseal','greyseal','shelduck','otter','beaver','watervole','pfrog','mallard','hen','sheep','pig','frabbit','cow','fgoat','fhorse','fdonkey','barncat','ughamster','ugshrew','wihare','wiquail','wilizard','iamammoth','iahorse','iabison','iarhino','iacavebear','iawolf','aukanga','aukoala','auwombat','audingo','auemu','auquokka','szdeer','szfox','szhare','szwfox','szhedgehog','szsquirrel','dedromedary','defennec','degazelle','deaddax','gatortoise','gasealion','galand','gamarine']);
 const TOTAL = BIOMES.reduce((n,b)=>n+b.animals.length,0);
 const RARES = BIOMES.reduce((n,b)=>n+b.animals.filter(a=>a.r==='r').length,0);
 const WEIGHT = {c:.72,u:.245,r:.035};   // per animal: a common one turns up about 6x as often as a rare one, an uncommon one about 3x
+/* the apple tree world follows the calendar, unless a season is picked in the settings */
+function curSeason(){if(S.seasonW&&S.seasonW!=='auto')return S.seasonW;const m=new Date().getMonth()+1;return m>=3&&m<=5?'spring':m>=6&&m<=8?'summer':m>=9&&m<=11?'autumn':'winter'}
+const inSeasonNow=a=>!a.season||a.season===curSeason();
+const AVOID={winter:(x,y)=>{const t=typeof winterTree==='function'?winterTree():null,tx=t?t.tx/W:.8,S=t?t.S/W:.3;
+    return ((x-.55)/.23)**2+((y-.672)/.06)**2<1   // the frozen pond
+      ||(x<.3&&y<.8)                             // the cabin, woodpile and sled
+      ||(Math.abs(x-tx)<S*.45&&y<.9)            // behind and in the Christmas tree
+      ||(x>tx+S*.4&&y<.88)                       // the spruce on the right
+      ||(x<.12)},                                // the big spruce on the left
+  seasons:(x,y)=>y>.7&&typeof BROOK_X==='function'&&Math.abs(x-BROOK_X(y))<brookW(y)*.5+.03,australia:(x,y)=>((x-.5)/.2)**2+((y-.8)/.06)**2<1};   // water that standing animals keep out of
 const BYID = id => BIOMES.find(b=>b.id===id);
 const bName = b => BIOME_NAMES[S.lang][b.id];
 const aName = a => (ANIMAL_TEXT[S.lang][a.id]||ANIMAL_TEXT.en[a.id])[0];
@@ -5952,8 +6083,16 @@ enrich('rainforest',{
   bg(c,R){
     for(let i=0;i<12;i++){const x=R()*W,w=W*(.006+R()*.012);c.fillStyle=`rgba(40,70,45,${.25+R()*.2})`;c.fillRect(x,H*.1,w,H*.75);for(let k=0;k<3;k++)leaf(c,x,H*(.3+R()*.4),H*.04,R()<.5?-.6:Math.PI+.6,'rgba(50,90,50,.4)')}
     hazeBand(c,H*.4,H*.86,'200,235,200',0,.18);
-    softPatches(c,R,H*.86,H,8,'rgba(30,50,20,.3)','rgba(140,180,80,.2)');
-    specks(c,R,H*.86,H,300,['rgba(120,90,50,.55)','rgba(170,130,60,.5)','rgba(70,110,40,.5)'],2.2);
+    // the forest floor the animals walk on: misty far away, dark and leafy close up
+    const fl=hillLine(c,R,.62,.006,9,lin(c,H*.6,H,[[0,'#5e8a52'],[.25,'#43703c'],[.6,'#2f5a2c'],[1,'#22401b']]));
+    hazeBand(c,H*.6,H*.68,'200,235,200',.35,0);
+    // the waterfall lands in a small pool and runs off as a stream
+    ell(c,W*.735,fl(W*.735)+H*.012,W*.07,H*.018,0,'rgba(170,220,235,.85)');ell(c,W*.735,fl(W*.735)+H*.008,W*.045,H*.01,0,'rgba(240,250,255,.8)');
+    c.fillStyle='rgba(150,205,225,.6)';c.beginPath();c.moveTo(W*.7,fl(W*.7)+H*.02);c.bezierCurveTo(W*.68,H*.7,W*.78,H*.76,W*.74,H*.86);c.lineTo(W*.79,H*.86);c.bezierCurveTo(W*.82,H*.76,W*.73,H*.7,W*.77,fl(W*.77)+H*.02);c.fill();
+    for(let i=0;i<14;i++){const x=R()*W,y=fl(x);c.strokeStyle='rgba(60,40,25,.55)';c.lineWidth=2+R()*2;c.beginPath();c.moveTo(x,y);c.quadraticCurveTo(x+W*.02,y+H*.02,x+W*(.03+R()*.03),y+H*(.03+R()*.03));c.stroke()}
+    softPatches(c,R,H*.64,H,14,'rgba(30,50,20,.3)','rgba(160,200,90,.2)');
+    specks(c,R,H*.63,H,600,['rgba(120,90,50,.55)','rgba(170,130,60,.5)','rgba(70,110,40,.5)','rgba(200,160,70,.45)'],2);
+    fineGrass(c,R,H*.63,H,500,'rgba(30,60,25,.45)','rgba(150,200,110,.3)');
   }
 });
 
@@ -6405,6 +6544,301 @@ SCENES.galapagos={
 };
 
 
+/* ================= The apple tree through the seasons =================
+   One orchard meadow with a big old apple tree. The season comes from the calendar
+   (or from the setting), and sky, fields, tree, ground, weather and animals change with it. */
+const SZ={
+  spring:{sky:[[0,'#7fb6e6'],[.6,'#c6e2f2'],[1,'#f2f4e6']],sun:[.2,.18,.26,'255,250,225','#fffbea'],
+    far:'#b9d39a',fields:['rgba(246,226,90,.75)','rgba(150,200,100,.45)','rgba(200,226,140,.4)','rgba(246,226,90,.6)','rgba(130,180,90,.4)'],
+    hedge:['#5e8e3e','#6e9e48','#80b054','#94c064'],meadow:[[0,'#b4da7e'],[.45,'#94c860'],[1,'#5e9a3c']],grassD:'rgba(60,110,30,.35)',grassL:'rgba(220,250,170,.4)',tufts:['#6aa844','#8cc458','#5a9a3a','#a6d46a'],cloud:'rgba(255,255,255,.7)'},
+  summer:{sky:[[0,'#4f97da'],[.6,'#a8d4ee'],[1,'#eef2de']],sun:[.18,.12,.3,'255,248,215','#fffbe6'],
+    far:'#a8c47c',fields:['rgba(236,200,90,.7)','rgba(120,170,70,.45)','rgba(226,186,80,.6)','rgba(150,190,90,.4)','rgba(240,210,110,.6)'],
+    hedge:['#3e6e2a','#4e8034','#5e9040','#72a44c'],meadow:[[0,'#a6cc68'],[.45,'#82b84e'],[1,'#4e8a2e']],grassD:'rgba(50,100,25,.4)',grassL:'rgba(230,240,150,.35)',tufts:['#5a9a36','#7ab048','#c8b860','#4e8a2e'],cloud:'rgba(255,255,255,.75)'},
+  autumn:{sky:[[0,'#6c9cc8'],[.55,'#d6d8cc'],[1,'#f2dcb4']],sun:[.16,.3,.32,'255,226,170','#fff1d6'],
+    far:'#bca878',fields:['rgba(150,110,70,.6)','rgba(190,150,80,.5)','rgba(120,140,70,.4)','rgba(170,120,80,.55)','rgba(210,170,100,.45)'],
+    hedge:['#a8562a','#c8762e','#d8a03a','#8a7a34','#6e7a34'],meadow:[[0,'#b8b870'],[.45,'#98a254'],[1,'#66763a']],grassD:'rgba(90,90,30,.4)',grassL:'rgba(240,220,150,.35)',tufts:['#8a9440','#b0a04e','#c89a4a','#6e7a36'],cloud:'rgba(255,248,236,.6)'},
+  winter:{sky:[[0,'#8aa6c4'],[.6,'#cfdbe6'],[1,'#eef0f2']],sun:[.24,.33,.24,'255,240,225','#fff6ec'],
+    far:'#e6eef4',fields:['rgba(255,255,255,.6)','rgba(200,214,228,.4)','rgba(240,246,250,.6)','rgba(214,224,234,.45)'],
+    hedge:['#6a6a6e','#7a7a80','#8a8a8e','#5a5a60'],meadow:[[0,'#f2f6fa'],[.5,'#e6eef5'],[1,'#d4e0ea']],grassD:'rgba(120,140,160,.25)',grassL:'rgba(255,255,255,.5)',tufts:['#a89a7a','#8a7e64','#c0b490'],cloud:'rgba(250,252,255,.75)'}
+};
+const SZ_BROOK=[[-.03,.705],[.06,.745],[.13,.8],[.17,.86],[.22,.93],[.27,1.02]];
+function BROOK_X(y){if(y<SZ_BROOK[0][1])return -1;for(let i=1;i<SZ_BROOK.length;i++){const [x0,y0]=SZ_BROOK[i-1],[x1,y1]=SZ_BROOK[i];if(y<=y1)return x0+(x1-x0)*(y-y0)/(y1-y0)}return SZ_BROOK[SZ_BROOK.length-1][0]}
+const brookW=y=>.012+(y-.7)*.12;
+/* the big tree: a gnarled, wide apple tree. Tapered, curving limbs; twigs at the tips. */
+function appleSkeleton(R,S){
+  const segs=[],blobs=[];
+  const grow=(x,y,a,len,w,d)=>{const bend=(R()-.5)*.7,x2=x+Math.cos(a)*len,y2=y+Math.sin(a)*len,cx=(x+x2)/2+Math.cos(a+Math.PI/2)*len*bend*.3,cy=(y+y2)/2+Math.sin(a+Math.PI/2)*len*bend*.3,w2=w*(d>=4?.45:.66);
+    segs.push({x,y,cx,cy,x2,y2,w,w2,d});
+    if(d>=3)blobs.push([x2,y2,S*(.05+R()*.03)]);if(d===2)blobs.push([cx,cy,S*(.06+R()*.03)]);
+    if(d<5){const n=d<=1?3:2+(R()<.3?1:0);for(let i=0;i<n;i++){let na=a+(i/(n-1||1)-.5)*(d<=1?1.1:.9)+(R()-.5)*.35;na+=(-Math.PI/2-na)*.12;na=Math.max(-Math.PI*.96,Math.min(-Math.PI*.04,na));
+      const t=d<=1?1:.55+R()*.45,bx=x+(x2-x)*t,by=y+(y2-y)*t;grow(bx,by,na,len*(d===0?.78:.7)*(.8+R()*.35),w2*(t<1?.85:1),d+1)}}};
+  // a stout, slightly leaning trunk
+  segs.push({x:0,y:0,cx:-S*.03,cy:-S*.14,x2:S*.015,y2:-S*.27,w:S*.12,w2:S*.08,d:-1});
+  const top=[S*.015,-S*.27];
+  const limbs=[[-2.62,.27,-.22],[-2.0,.3,-.27],[-1.25,.31,-.26],[-.62,.28,-.23]];
+  limbs.forEach(([a,l,y],i)=>grow(top[0]+(i-1.5)*S*.012,S*y,a,S*l,S*.052,0));
+  for(let i=0;i<16;i++){const a=-Math.PI*(.1+R()*.8),r=Math.sqrt(R());blobs.push([Math.cos(a)*S*.5*r,-S*.66+Math.sin(a)*S*.22*r,S*(.08+R()*.05)])}
+  for(let i=0;i<7;i++)blobs.push([(i/6-.5)*S*.5,-S*(.5+R()*.08),S*(.07+R()*.03)]);
+  const at=(sg,t)=>[(1-t)*(1-t)*sg.x+2*(1-t)*t*sg.cx+t*t*sg.x2,(1-t)*(1-t)*sg.y+2*(1-t)*t*sg.cy+t*t*sg.y2];
+  const main=segs.filter(sg=>sg.d===0);
+  return {segs,blobs,swing:at(main[3],.72),feeder:at(main[0],.7)};
+}
+function appleTreeSprite(R,S,season){
+  const W2=S*2.3,H2=S*1.4,sk=appleSkeleton(R,S);
+  const sp=sprite(W2,H2,c=>{c.translate(W2/2,H2-S*.02);
+    const limb=s=>{const N=s.d>=3?3:8;c.lineCap='round';for(let i=0;i<N;i++){const t0=i/N,t1=(i+1)/N,p=t=>[(1-t)*(1-t)*s.x+2*(1-t)*t*s.cx+t*t*s.x2,(1-t)*(1-t)*s.y+2*(1-t)*t*s.cy+t*t*s.y2],[ax,ay]=p(t0),[bx,by]=p(t1),w=s.w+(s.w2-s.w)*(t0+t1)/2;
+      c.strokeStyle=s.d<=1?'#5a4232':s.d<=3?'#5e4636':'#6a5040';c.lineWidth=Math.max(1,w);c.beginPath();c.moveTo(ax,ay);c.lineTo(bx,by);c.stroke();
+      }};
+    // trunk as a filled, flared shape with bark
+    const T=sk.segs[0];c.fillStyle=(()=>{const g=c.createLinearGradient(-S*.07,0,S*.07,0);g.addColorStop(0,'#3a2a1e');g.addColorStop(.4,'#6e5440');g.addColorStop(.7,'#5a4232');g.addColorStop(1,'#2e2018');return g})();
+    c.beginPath();c.moveTo(-S*.17,0);c.quadraticCurveTo(-S*.07,-S*.02,-S*.065,-S*.1);c.quadraticCurveTo(-S*.075,-S*.2,-S*.035,-S*.29);c.lineTo(S*.06,-S*.29);c.quadraticCurveTo(S*.05,-S*.18,S*.07,-S*.09);c.quadraticCurveTo(S*.08,-S*.02,S*.18,0);c.closePath();c.fill();
+    c.strokeStyle='rgba(30,20,12,.35)';c.lineWidth=1.4;for(let k=0;k<6;k++){const x=-S*.05+k*S*.019;c.beginPath();c.moveTo(x,-S*.01);c.bezierCurveTo(x-S*.01,-S*.1,x+S*.012,-S*.18,x+S*.004,-S*.28);c.stroke()}
+    ell(c,-S*.015,-S*.17,S*.016,S*.024,0,'#2a1c12');ell(c,-S*.012,-S*.168,S*.01,S*.016,0,'#1a120c');
+    const cols={summer:['#2c5a22','#3a6e2a','#4a8034','#5e9440','#74a84c','#8cbc5c'],autumn:['#a8401e','#c8582a','#de7a2e','#e8a030','#f2c84a','#b89a3a']}[season];
+    if(season==='summer')sk.blobs.forEach(([x,y,r])=>disc(c,x,y+r*.12,r*.9,'#2a5220'));
+    sk.segs.slice(1).sort((a,b)=>a.d-b.d).forEach(limb);
+    const cnt=(r,k)=>Math.round(r*r/(S*S*.0001)*k);
+    if(season==='spring'){
+      sk.blobs.forEach(([x,y,r])=>disc(c,x,y+r*.25,r*.8,'rgba(196,120,150,.35)'));
+      sk.blobs.forEach(([x,y,r])=>dabs(c,R,x,y,r*1.05,r*.95,cnt(r,.3),['#7aae4a','#8cc058','#a2d06a'],S*.012));
+      sk.blobs.forEach(([x,y,r])=>dabs(c,R,x,y,r,r*.9,cnt(r,.85),['#e6a8be','#f2bfd0','#f8d4e0','#fde8f0','#ffffff'],S*.011,'rgba(255,255,255,.8)'));
+    }else if(season==='summer'){
+      sk.blobs.forEach(([x,y,r])=>dabs(c,R,x,y,r,r*.95,cnt(r,1.4),cols,S*.014,'rgba(220,240,160,.4)'));
+      for(let i=0;i<46;i++){const b=sk.blobs[R()*sk.blobs.length|0],a=R()*TAU,k=Math.sqrt(R())*.85,x=b[0]+Math.cos(a)*b[2]*k,y=b[1]+Math.sin(a)*b[2]*k,r=S*.017;disc(c,x,y,r,R()<.75?'#d8352a':'#a8c43a');disc(c,x-r*.3,y-r*.35,r*.3,'rgba(255,255,255,.5)')}
+    }else if(season==='autumn'){
+      sk.blobs.forEach(([x,y,r])=>dabs(c,R,x,y,r,r*.95,cnt(r,.7),cols,S*.014,'rgba(255,240,180,.45)'));
+      for(let i=0;i<22;i++){const b=sk.blobs[R()*sk.blobs.length|0],a=R()*TAU,k=Math.sqrt(R())*.8,x=b[0]+Math.cos(a)*b[2]*k,y=b[1]+Math.sin(a)*b[2]*k,r=S*.018;disc(c,x,y,r,'#c8281e');disc(c,x-r*.3,y-r*.35,r*.3,'rgba(255,255,255,.5)')}
+    }else{
+      c.lineCap='round';sk.segs.slice(1).forEach(s=>{const dx=s.x2-s.x,dy=s.y2-s.y;if(Math.abs(dy)>Math.abs(dx)*1.4)return;const w=(s.w+s.w2)/2;c.strokeStyle='#fbfdff';c.lineWidth=Math.max(1.4,w*.45);c.beginPath();c.moveTo(s.x,s.y-s.w*.42);c.quadraticCurveTo(s.cx,s.cy-w*.45,s.x2,s.y2-s.w2*.42);c.stroke()});
+      c.fillStyle='#fbfdff';c.beginPath();c.ellipse(S*.012,-S*.29,S*.05,S*.013,0,Math.PI,TAU);c.fill();
+      [[-.2,-.55],[.2,-.6],[.04,-.76]].forEach(([dx,dy])=>{disc(c,dx*S,dy*S,S*.012,'#8a3a26');c.strokeStyle='#4a3628';c.lineWidth=1;c.beginPath();c.moveTo(dx*S,dy*S-S*.012);c.lineTo(dx*S,dy*S-S*.03);c.stroke()});
+    }
+  });
+  sp.sk=sk;return sp;
+}
+function smallOrchardTree(c,R,x,y,s,season){
+  c.fillStyle='#5a4230';c.fillRect(x-s*.06,y-s*.5,s*.12,s*.5);
+  c.strokeStyle='#5a4230';c.lineWidth=s*.05;[[-.3,-.75],[.28,-.8],[0,-.95]].forEach(([dx,dy])=>{c.beginPath();c.moveTo(x,y-s*.45);c.lineTo(x+dx*s,y+dy*s);c.stroke()});
+  if(season==='winter'){c.strokeStyle='rgba(255,255,255,.8)';c.lineWidth=s*.03;[[-.3,-.77],[.28,-.82],[0,-.97]].forEach(([dx,dy])=>{c.beginPath();c.moveTo(x,y-s*.47);c.lineTo(x+dx*s,y+dy*s);c.stroke()});return}
+  const cols={spring:['#f8d4e0','#ffffff','#f2bfd0','#9cc86a'],summer:['#3e7a2c','#4e8a34','#5e9a3c'],autumn:['#d8782a','#e8a030','#c8582a','#a8a03a']}[season];
+  if(season==='summer')disc(c,x,y-s*.82,s*.42,'#3a6e28');
+  dabs(c,R,x,y-s*.82,s*.45,s*.36,40,cols,s*.07);
+}
+SCENES.seasons={
+  bg(c,R){
+    const se=curSeason(),P=SZ[se];
+    skyFill(c,P.sky,H*.58);
+    sunGlow(c,W*P.sun[0],H*P.sun[1],H*P.sun[2],P.sun[3],P.sun[4]);
+    c.strokeStyle='rgba(255,255,255,.35)';c.lineCap='round';for(let i=0;i<6;i++){const x=R()*W,y=H*(.06+R()*.18),l=W*(.06+R()*.12);c.lineWidth=2+R()*3;c.beginPath();c.moveTo(x,y);c.quadraticCurveTo(x+l*.5,y-H*.01,x+l,y+H*.004);c.stroke()}
+    if(se==='winter'){c.fillStyle='rgba(255,255,255,.25)';c.fillRect(0,0,W,H*.58)}
+    // far hills with their patchwork of fields
+    const y1=fieldHill(c,R,.5,.03,5,P.far,P.fields,-.06);
+    for(let x=W*.02;x<W;x+=W*(.014+R()*.025))if(R()<.5){const s=H*(.008+R()*.006),y=y1(x)+H*.004,cc=se==='winter'?'rgba(225,232,240,.9)':se==='autumn'?['rgba(200,120,58,.7)','rgba(168,134,46,.7)','rgba(138,122,64,.7)'][(R()*3)|0]:se==='spring'?'rgba(150,186,130,.75)':'rgba(120,160,100,.75)';c.fillStyle='rgba(90,80,70,.5)';c.fillRect(x-.6,y-s*1.4,1.2,s*1.4);disc(c,x,y-s*1.8,s,cc);disc(c,x+s*.6,y-s*1.5,s*.7,cc);if(se==='winter'){c.strokeStyle='rgba(120,120,130,.5)';c.lineWidth=1;c.beginPath();c.moveTo(x,y-s);c.lineTo(x-s,y-s*2.4);c.moveTo(x,y-s*1.2);c.lineTo(x+s,y-s*2.6);c.stroke()}}
+    const vx=W*.42,vy=y1(vx);c.fillStyle=se==='winter'?'#e8eef4':'#ece4d4';c.fillRect(vx,vy-H*.045,H*.016,H*.05);c.beginPath();c.moveTo(vx-H*.002,vy-H*.045);c.lineTo(vx+H*.008,vy-H*.075);c.lineTo(vx+H*.018,vy-H*.045);c.fillStyle='#7a8a8a';c.fill();
+    [[-.02,.014],[.018,.012],[.035,.013]].forEach(([dx,s])=>{const X=vx+W*dx,Y=y1(X)+H*.003;c.fillStyle=se==='winter'?'#eef2f6':'#e8e0d0';c.fillRect(X,Y-H*s,H*s*1.3,H*s+H*.006);c.beginPath();c.moveTo(X-1,Y-H*s);c.lineTo(X+H*s*.65,Y-H*s*1.6);c.lineTo(X+H*s*1.3+1,Y-H*s);c.fillStyle=se==='winter'?'#f6f8fa':'#c0786a';c.fill()});
+    hazeBand(c,H*.42,H*.58,se==='autumn'?'246,232,206':'238,244,240',0,.4);
+    const y2=fieldHill(c,R,.57,.02,5,P.meadow[0][1],P.fields.slice().reverse(),.1);
+    // hedgerow and distant orchard trees
+    if(se==='winter'){for(let x=-W*.02;x<W*1.02;x+=W*.009){const s=H*(.013+R()*.009),y=y2(x)-s*.4;dabs(c,R,x,y,s,s*.8,10,['#6e6660','#7e766e','#8a827a'],s*.3);ell(c,x,y-s*.45,s*.95,s*.42,0,'rgba(250,252,255,.95)')}
+      c.strokeStyle='rgba(100,88,78,.55)';c.lineWidth=1;for(let x=0;x<W;x+=W*.012){const y=y2(x)-H*.02;c.beginPath();c.moveTo(x,y);c.lineTo(x+(R()-.5)*8,y-H*.012);c.stroke()}}
+    else for(let x=-W*.02;x<W*1.02;x+=W*.009){const s=H*(.013+R()*.009);dabs(c,R,x,y2(x)-s*.4,s,s*.8,12,P.hedge,s*.35)}
+    if(se==='winter')for(let x=0;x<W;x+=W*.01)ell(c,x,y2(x)-H*.018,H*.011,H*.0045,0,'rgba(255,255,255,.95)');
+    [[.07,.615,.08],[.2,.605,.065],[.33,.6,.05],[.86,.6,.06],[.96,.61,.075]].forEach(([x,y,s])=>smallOrchardTree(c,R,W*x,H*y,H*s,se));
+    // the near meadow
+    const g=hillLine(c,R,.62,.006,8,lin(c,H*.6,H,P.meadow));
+    if(se==='winter'){softPatches(c,R,H*.64,H,18,'rgba(150,180,215,.28)','rgba(255,255,255,.7)');snowTex(c,R,H*.64,H)}
+    else{softPatches(c,R,H*.64,H,16,se==='autumn'?'rgba(150,110,40,.22)':'rgba(50,100,30,.2)','rgba(240,250,190,.22)');fineGrass(c,R,H*.62,H,1600,P.grassD,P.grassL)}
+    // flowers, leaves or snow under the tree
+    const flowers={spring:['#ffffff','#fff3a0','#f6d23a','#b8a0f0','#ffffff','#f8c8d8'],summer:['#e8352a','#4a7ad8','#ffffff','#f2c23a','#c86ab8'],autumn:['#c8281e','#e8a030','#d8782a','#a8401e','#f2c84a'],winter:['rgba(255,255,255,.9)']}[se];
+    const n=se==='autumn'?520:se==='winter'?0:300;
+    for(let i=0;i<n;i++){const y=H*(.63+Math.pow(R(),1.1)*.37),x=se==='autumn'&&R()<.6?W*(.64+(R()-.5)*.6):R()*W,s=(1.2+R()*1.8)*(.5+(y/H-.6)*3);
+      if(se==='autumn'){c.save();c.translate(x,y);c.rotate(R()*TAU);c.fillStyle=flowers[i%flowers.length];c.beginPath();c.ellipse(0,0,s*1.4,s*.7,0,0,TAU);c.fill();c.restore()}
+      else if(se==='spring'&&i%3===0){for(let k=0;k<6;k++){const a=k*TAU/6;disc(c,x+Math.cos(a)*s*.8,y+Math.sin(a)*s*.45,s*.55,'#fbfbf6')}disc(c,x,y,s*.5,'#f2c23a')}
+      else disc(c,x,y,s*.8,flowers[i%flowers.length])}
+    if(se==='spring')for(let i=0;i<180;i++){const x=W*(.64+(R()-.5)*.55),y=H*(.74+R()*.12);ell(c,x,y,2+R()*2,1.2,R()*3,R()<.5?'rgba(255,255,255,.9)':'rgba(248,200,220,.9)')}
+    if(se==='summer'||se==='autumn')for(let i=0;i<(se==='autumn'?9:4);i++){const x=W*(.58+(R()-.5)*.4),y=H*(.79+R()*.06),r=H*.008;disc(c,x,y,r,se==='autumn'&&i%3===0?'#8a5a2a':'#c8281e');disc(c,x-r*.3,y-r*.35,r*.3,'rgba(255,255,255,.5)')}
+    if(se==='autumn'){[[.3,.84],[.34,.86],[.92,.9]].forEach(([x,y],i)=>{const X=W*x,Y=H*y,s=H*.014*(1+i*.1);c.fillStyle='#f2e8d8';c.fillRect(X-s*.25,Y-s,s*.5,s);ell(c,X,Y-s,s,s*.5,0,i%2?'#c8382a':'#a8642a');if(i%2===0)[[-.4,-.1],[.3,-.2]].forEach(([a,b])=>disc(c,X+a*s,Y-s+b*s,s*.12,'#fbf4e6'))})}
+    // the brook
+    const pts=[];for(let y=.705;y<=1.02;y+=.01)pts.push([BROOK_X(y),y]);
+    c.beginPath();pts.forEach(([x,y],i)=>{const X=W*(x-brookW(y)/2),Y=H*y;i?c.lineTo(X,Y):c.moveTo(X,Y)});for(let i=pts.length-1;i>=0;i--){const [x,y]=pts[i];c.lineTo(W*(x+brookW(y)/2),H*y)}c.closePath();
+    c.fillStyle=se==='winter'?lin(c,H*.7,H,[[0,'#cfe2ee'],[1,'#b0cfe2']]):lin(c,H*.7,H,[[0,'#8ec0d8'],[1,'#5a96b8']]);c.fill();
+    c.strokeStyle=se==='winter'?'rgba(255,255,255,.9)':'rgba(120,100,70,.45)';c.lineWidth=2.4;c.stroke();
+    if(se==='winter'){c.strokeStyle='rgba(255,255,255,.7)';c.lineWidth=1;for(let i=0;i<14;i++){const y=.72+R()*.28,x=BROOK_X(y)+(R()-.5)*brookW(y)*.6;c.beginPath();c.moveTo(W*x,H*y);c.lineTo(W*(x+brookW(y)*.25),H*(y+.01));c.stroke()}
+      // hare tracks in the snow
+      for(let i=0;i<9;i++){const x=W*(.36+i*.035),y=H*(.9-i*.012);ell(c,x,y,3,5,.3,'rgba(130,160,200,.5)');ell(c,x+6,y+2,3,5,.3,'rgba(130,160,200,.5)')}}
+    else for(let i=0;i<10;i++){const y=.73+R()*.26;[[-1],[1]].forEach(([s])=>{const x=BROOK_X(y)+s*brookW(y)*.55;grassBlade(c,W*x,H*y,H*(.015+R()*.02),(R()-.5)*8,se==='autumn'?'#8a8a3a':'#4e8a2e',2)})}
+    // a few stones in the meadow
+    [[.47,.92,.026],[.86,.82,.018]].forEach(([x,y,s])=>{boulder(c,W*x,H*y,H*s,'#8e8a84','#b6b2aa','#6e6a64');if(se==='winter')ell(c,W*x,H*y-H*s*.85,H*s*.85,H*s*.28,0,'rgba(255,255,255,.95)')});
+    // shadow of the big tree
+    const X=W*SZ_TREE.x,Y=H*SZ_TREE.y,S=H*SZ_TREE.s;c.save();c.translate(X+S*.08,Y+H*.005);c.scale(1,.08);disc(c,0,0,S*.55,rad(c,0,0,S*.55,[[0,se==='winter'?'rgba(80,110,150,.25)':'rgba(30,50,15,.32)'],[1,'rgba(0,0,0,0)']]));c.restore();
+    if(se==='spring')[[.87,.79],[.925,.8]].forEach(([x,y],i)=>{const X2=W*x,Y2=H*y,s=H*.07;ell(c,X2,Y2,s*.6,s*.1,0,'rgba(40,60,20,.25)');c.fillStyle='#f2e6c8';c.fillRect(X2-s*.4,Y2-s*.9,s*.8,s*.9);[0,1,2].forEach(k=>{c.fillStyle=['#e8b84a','#d8a03a','#f2c860'][(k+i)%3];c.fillRect(X2-s*.42,Y2-s*.9+k*s*.3,s*.84,s*.27)});c.fillStyle='#8a6a48';c.fillRect(X2-s*.48,Y2-s*1.0,s*.96,s*.12);c.fillStyle='#3a2a1a';c.fillRect(X2-s*.1,Y2-s*.18,s*.2,s*.05)});
+  },
+  props(R){
+    const se=curSeason(),P=SZ[se],X=W*SZ_TREE.x,Y=H*SZ_TREE.y,S=H*SZ_TREE.s,tree=appleTreeSprite(rng(77),S,se);
+    const fall=Array.from({length:se==='winter'?90:se==='summer'?0:40},()=>({x:R(),o:R(),v:.02+R()*.03,s:.6+R()*.9,ph:R()*6,col:se==='autumn'?['#c8281e','#e8a030','#d8782a','#f2c84a'][R()*4|0]:R()<.5?'#ffffff':'#f8c8da'}));
+    const fluff=se==='summer'?Array.from({length:10},()=>({x:R(),o:R(),v:.008+R()*.01,ph:R()*6})):[];
+    const glints=se==='winter'?[]:Array.from({length:12},()=>({y:.73+R()*.26,ph:R()*6}));
+    const sway=t=>wind(t,X)*.004;
+    const toTree=(t,px,py)=>{const a=sway(t),cs=Math.cos(a),sn=Math.sin(a);return [X+px*cs-py*sn,Y+px*sn+py*cs]};
+    return [
+      cloudProps(R,3,.06,.22,P.cloud,.35),
+      se==='autumn'?flockProps(R,7,.16,'rgba(60,60,70,.5)',110,1.1):se==='spring'?flockProps(R,4,.2,'rgba(60,60,70,.45)',90,.8):()=>{},
+      (c,t)=>{c.strokeStyle='rgba(255,255,255,.7)';c.lineWidth=1.3;glints.forEach(g=>{c.globalAlpha=.6*Math.pow(Math.abs(Math.sin(t*.9+g.ph)),6);const x=W*BROOK_X(g.y);c.beginPath();c.moveTo(x-4,H*g.y);c.lineTo(x+4,H*g.y);c.stroke()});c.globalAlpha=1},
+      (c,t)=>{c.save();c.translate(X,Y);c.rotate(sway(t));c.drawImage(tree.cv,-tree.w/2,-tree.h+S*.02,tree.w,tree.h);c.restore()},
+      // the swing (spring to autumn) or a bird feeder (winter)
+      (c,t)=>{if(se==='winter'){const [fx,fy]=toTree(t,tree.sk.feeder[0],tree.sk.feeder[1]-S*.02),sw=Math.sin(t*.9)*.06,L=S*.12,bx=fx+Math.sin(sw)*L,by=fy+Math.cos(sw)*L;
+          c.strokeStyle='#3a2a1a';c.lineWidth=1.4;c.beginPath();c.moveTo(fx,fy);c.lineTo(bx,by);c.stroke();c.save();c.translate(bx,by);c.rotate(sw);const s=S*.05;
+          c.fillStyle='#8a5a34';c.beginPath();c.moveTo(-s*.75,s*.15);c.lineTo(0,-s*.3);c.lineTo(s*.75,s*.15);c.fill();c.fillStyle='#fbfdff';c.beginPath();c.moveTo(-s*.75,s*.12);c.lineTo(0,-s*.34);c.lineTo(s*.75,s*.12);c.lineTo(s*.6,s*.18);c.lineTo(0,-s*.22);c.lineTo(-s*.6,s*.18);c.fill();
+          c.fillStyle='#c89a5a';c.fillRect(-s*.45,s*.15,s*.9,s*.55);c.fillStyle='#e8c870';c.fillRect(-s*.35,s*.45,s*.7,s*.22);c.fillStyle='#6a4a2a';c.fillRect(-s*.6,s*.68,s*1.2,s*.08);c.restore();return}
+        const [ax,ay]=toTree(t,tree.sk.swing[0],tree.sk.swing[1]+S*.01),sw=Math.sin(t*.7)*.08,L=Y-S*.09-ay,sx=ax+Math.sin(sw)*L,sy=ay+Math.cos(sw)*L,w=S*.075;
+        c.strokeStyle='#d8c8a0';c.lineWidth=1.6;[-1,1].forEach(k=>{c.beginPath();c.moveTo(ax+k*w*.85,ay);c.lineTo(sx+k*w*.85,sy);c.stroke()});
+        c.save();c.translate(sx,sy);c.rotate(sw*.5);c.fillStyle='#8a5a34';c.fillRect(-w,-S*.006,w*2,S*.014);c.fillStyle='rgba(255,255,255,.18)';c.fillRect(-w,-S*.006,w*2,S*.004);c.restore()},
+      // ladder and apple basket in autumn
+      se==='autumn'?(c=>{const lx=X+S*.12,ly=Y,lt=Y-S*.5,s=S*.02;c.strokeStyle='#a8865a';c.lineWidth=s*.5;c.lineCap='round';[[0],[s*2.2]].forEach(([d])=>{c.beginPath();c.moveTo(lx+d+S*.08,ly);c.lineTo(lx+d,lt);c.stroke()});for(let k=1;k<9;k++){const q=k/9;c.lineWidth=s*.35;c.beginPath();c.moveTo(lx+S*.08*(1-q),ly-(ly-lt)*q);c.lineTo(lx+s*2.2+S*.08*(1-q),ly-(ly-lt)*q);c.stroke()}
+        const bx=X+S*.3,by=Y+H*.012,bs=S*.05;ell(c,bx,by,bs*1.2,bs*.2,0,'rgba(40,30,10,.25)');c.fillStyle='#b8864a';c.beginPath();c.moveTo(bx-bs,by-bs*.9);c.lineTo(bx+bs,by-bs*.9);c.lineTo(bx+bs*.8,by);c.lineTo(bx-bs*.8,by);c.closePath();c.fill();c.strokeStyle='rgba(90,60,30,.6)';c.lineWidth=1;for(let k=1;k<4;k++){c.beginPath();c.moveTo(bx-bs*(1-k*.05),by-bs*.9+k*bs*.22);c.lineTo(bx+bs*(1-k*.05),by-bs*.9+k*bs*.22);c.stroke()}
+        [[-.6,-.95],[-.2,-1.05],[.2,-1],[.6,-.95],[0,-1.25],[-.4,-1.2],[.4,-1.18]].forEach(([dx,dy])=>{disc(c,bx+dx*bs,by+dy*bs,bs*.28,'#c8281e');disc(c,bx+dx*bs-bs*.08,by+dy*bs-bs*.1,bs*.08,'rgba(255,255,255,.5)')})}):()=>{},
+      (c,t)=>{const w=wind(t,0)*3;const cl=(x,y,k)=>{const X=W*x,Y=H*y;
+          if(se==='spring')for(let i=0;i<k;i++){const dx=(i-k/2)*H*.018,h=H*(.06+(i%3)*.012);c.strokeStyle='#4e8a2e';c.lineWidth=2.2;c.beginPath();c.moveTo(X+dx,Y);c.quadraticCurveTo(X+dx+w*.4,Y-h*.6,X+dx+w,Y-h);c.stroke();const fx=X+dx+w,fy=Y-h;for(let j=0;j<6;j++){const a=j*TAU/6;ell(c,fx+Math.cos(a)*H*.007,fy+Math.sin(a)*H*.007,H*.007,H*.004,a,'#f8e070')}disc(c,fx,fy,H*.006,'#f2a030');disc(c,fx,fy,H*.003,'#e8802a')}
+          else if(se==='summer')for(let i=0;i<k;i++){const dx=(i-k/2)*H*.02,h=H*(.07+(i%3)*.015);c.strokeStyle='#5a8a3a';c.lineWidth=1.8;c.beginPath();c.moveTo(X+dx,Y);c.quadraticCurveTo(X+dx+w*.4,Y-h*.6,X+dx+w,Y-h);c.stroke();const fx=X+dx+w,fy=Y-h;[[-.3,0],[.3,0],[0,-.2],[0,.12]].forEach(([a,b],j)=>ell(c,fx+a*H*.014,fy+b*H*.014,H*.011,H*.009,0,j%2?'#e8352a':'#d42a20'));disc(c,fx,fy,H*.003,'#2a1a1a')}
+          else if(se==='autumn')for(let i=0;i<k;i++){const dx=(i-k/2)*H*.022,s=H*(.012+(i%2)*.006);c.fillStyle='#f2e8d8';c.fillRect(X+dx-s*.25,Y-s,s*.5,s);ell(c,X+dx,Y-s,s,s*.55,0,i%2?'#c8382a':'#a8642a');if(i%2)[[-.4,-.1],[.3,-.25]].forEach(([a,b])=>disc(c,X+dx+a*s,Y-s+b*s,s*.13,'#fbf4e6'))}
+          else for(let i=0;i<k;i++){const dx=(i-k/2)*H*.016,h=H*(.03+(i%2)*.01);c.strokeStyle='#5a7a4a';c.lineWidth=1.4;c.beginPath();c.moveTo(X+dx,Y);c.lineTo(X+dx+w*.5,Y-h);c.stroke();ell(c,X+dx+w*.5+2,Y-h+3,H*.004,H*.008,.3,'#fbfdff');ell(c,X+dx+w*.5-1,Y-h+4,H*.003,H*.006,-.4,'#f2f6fa')}};
+        cl(.06,.99,5);cl(.95,.985,6);cl(.4,1.0,4)},
+      tuftProps(H*.66,H,se==='winter'?30:70,P.tufts,R,H*(se==='summer'?.05:.035),(x,y)=>Math.abs(x/W-BROOK_X(y/H))<brookW(y/H)*.9),
+      (c,t)=>{fall.forEach(f=>{const q=(t*f.v+f.o)%1,y=-H*.05+q*H*1.05,x=((f.x*W+Math.sin(t*1.1+f.ph)*30+t*(se==='winter'?6:14))%(W+40))-20;
+        if(se==='winter'){c.fillStyle='rgba(255,255,255,.9)';c.beginPath();c.arc(x,y,f.s*1.6,0,TAU);c.fill();return}
+        c.save();c.translate(x,y);c.rotate(Math.sin(t*2+f.ph)*1.2);c.fillStyle=f.col;c.beginPath();c.ellipse(0,0,f.s*(se==='autumn'?6:3.4),f.s*(se==='autumn'?3:2.2),0,0,TAU);c.fill();c.restore()});
+        fluff.forEach(f=>{const q=(t*f.v+f.o)%1,x=(f.x+q*.5)%1*W,y=H*(.3+Math.sin(t*.6+f.ph)*.06+f.o*.3);c.strokeStyle='rgba(255,255,255,.75)';c.lineWidth=.8;for(let k=0;k<8;k++){const a=k*Math.PI/4;c.beginPath();c.moveTo(x,y);c.lineTo(x+Math.cos(a)*5,y+Math.sin(a)*5);c.stroke()}})}
+    ]}
+};
+const SZ_TREE={x:.64,y:.79,s:.62};
+
+
+/* ================= Winter wonderland, third version: painted in the same detailed style as the apple tree =================
+   The big tree keeps exactly the outline the advent decorations use (y = ty-S*.12-v*S*.86, half width S*.42*(1-v*.92)). */
+function snowyConifer(c,R,cx,base,S,half,top,trunk,cols,snowCols,tiers){
+  // trunk
+  c.fillStyle='#4a3424';c.fillRect(cx-S*trunk/2,base-S*.13,S*trunk,S*.14);
+  for(let i=0;i<tiers;i++){
+    const v0=i/tiers,v1=(i+1.25)/tiers,yb=base-S*.1-v0*top,yt=base-S*.1-Math.min(1,v1)*top,hw=half(v0);
+    // the layer's solid silhouette: a drooping skirt with a scalloped hem
+    c.fillStyle=cols[0];c.beginPath();c.moveTo(cx,yt);c.quadraticCurveTo(cx-hw*.35,yb-(yb-yt)*.55,cx-hw,yb+S*.012);
+    for(let k=0;k<=8;k++){const u=-1+k/4,x=cx+u*hw*.98,y=yb+S*.012+Math.abs(Math.sin(k*1.7))*S*.008-Math.abs(u)*S*.004;c.lineTo(x,y)}
+    c.quadraticCurveTo(cx+hw*.35,yb-(yb-yt)*.55,cx,yt);c.fill();
+    // drooping branch layer: dense dabs, darker below, lighter towards the top-left
+    for(let k=0;k<Math.round(hw*hw/(S*S)*4200+30);k++){const u=R()*2-1,q=Math.pow(R(),.9),x=cx+u*hw*(1-q*.75),y=yb-(yb-yt)*q+Math.abs(u)*S*.03*(1-q)-S*.01;
+      const lt=clamp(.55-u*.25+q*.3+(R()-.5)*.3,0,.999);c.fillStyle=cols[Math.floor(lt*cols.length)];c.beginPath();c.ellipse(x,y,S*(.012+R()*.008),S*(.006+R()*.004),(u>0?.35:-.35)+(R()-.5)*.6,0,TAU);c.fill()}
+    // snow lying on the upper side of the layer
+    for(let k=0;k<Math.round(hw/S*80+4);k++){const u=R()*2-1,q=.15+R()*.45,x=cx+u*hw*(1-q*.75)*.92,y=yb-(yb-yt)*q+Math.abs(u)*S*.03*(1-q)-S*.022;
+      c.fillStyle=snowCols[(R()*snowCols.length)|0];c.beginPath();c.ellipse(x,y,S*(.014+R()*.01),S*(.005+R()*.003),(u>0?.3:-.3),0,TAU);c.fill()}
+    c.fillStyle='rgba(255,255,255,.92)';c.beginPath();c.moveTo(cx-hw*.8,yb-S*.004);c.quadraticCurveTo(cx-hw*.3,yb-(yb-yt)*.32,cx,yb-(yb-yt)*.55);c.quadraticCurveTo(cx-hw*.2,yb-(yb-yt)*.22,cx-hw*.8,yb-S*.004);c.fill();
+    // the snowy rim of each layer, with a soft blue shadow under it
+    c.fillStyle='rgba(120,150,200,.22)';c.beginPath();c.ellipse(cx,yb+S*.004,hw*.85,S*.012,0,0,Math.PI);c.fill();
+  }
+}
+function xmasSprite(S){
+  const R=rng(2412),W2=S*1.0,H2=S*1.08;
+  return sprite(W2,H2,c=>{const X=W2/2,Y=H2-S*.02;
+    ell(c,X,Y,S*.42,S*.03,0,'rgba(90,110,150,.25)');
+    snowyConifer(c,R,X,Y,S,v=>S*.42*(1-v*.92)*1.02,S*.86,.07,['#173f2a','#1e4c33','#255a3c','#2e6a46','#3a7a52','#4a8a5e'],['#ffffff','#f4f8fd','#e6eef8'],9);
+    disc(c,X,Y-S*.12-S*.86,S*.012,'#2e6a46');
+  })}
+function spruceSprite(R,S,cols){
+  const W2=S*.75,H2=S*1.06;
+  return sprite(W2,H2,c=>{const X=W2/2,Y=H2-S*.02;snowyConifer(c,R,X,Y,S,v=>S*.3*Math.pow(1-v,1.05)+S*.01,S*.92,.05,cols,['#ffffff','#f2f6fc','#e2eaf6'],11)})}
+function bareBirchSprite(R,S){
+  const W2=S*.9,H2=S*1.05;
+  return sprite(W2,H2,c=>{const X=W2/2,Y=H2-S*.02;c.lineCap='round';
+    const br=(x,y,a,len,w,d)=>{const x2=x+Math.cos(a)*len,y2=y+Math.sin(a)*len;c.strokeStyle=d<1?'#ece8e2':d<3?'#b8aca6':'#7a6a64';c.lineWidth=w;c.beginPath();c.moveTo(x,y);c.quadraticCurveTo((x+x2)/2+(R()-.5)*len*.2,(y+y2)/2,x2,y2);c.stroke();
+      if(d<2&&w>2){for(let k=0;k<3;k++){const t=.2+R()*.7;c.strokeStyle='#3a3432';c.lineWidth=w*.5;c.beginPath();c.moveTo(x+(x2-x)*t-w*.3,y+(y2-y)*t);c.lineTo(x+(x2-x)*t+w*.2,y+(y2-y)*t);c.stroke()}}
+      if(Math.abs(Math.sin(a))<.85&&w>1.2){c.strokeStyle='rgba(255,255,255,.95)';c.lineWidth=w*.5;c.beginPath();c.moveTo(x,y-w*.4);c.lineTo(x2,y2-w*.4);c.stroke()}
+      if(d<6){const n=d<1?3:2;for(let i=0;i<n;i++)br(x2,y2,a+(i/(n-1)-.5)*(d<1?1.0:.75)+(R()-.5)*.3,len*(d<1?.6:.72)*(.85+R()*.2),w*.6,d+1)}};
+    br(X,Y,-Math.PI/2,S*.4,S*.04,0);
+    // fine hanging twigs, like a birch
+    c.strokeStyle='rgba(110,90,80,.5)';c.lineWidth=.8;for(let i=0;i<70;i++){const x=X+(R()-.5)*S*.7,y=Y-S*(.5+R()*.42);c.beginPath();c.moveTo(x,y);c.quadraticCurveTo(x+3,y+S*.04,x+1,y+S*(.06+R()*.06));c.stroke()}
+  })}
+SCENES.winter={
+  bg(c,R){
+    // a quiet, pearly winter sky with a low pink sun
+    skyFill(c,[[0,'#7f98c0'],[.45,'#b8c8e0'],[.8,'#e8dce6'],[1,'#f6e6e0']],H*.58);
+    sunGlow(c,W*.24,H*.36,H*.34,'255,226,214','#fff2ea');
+    for(let i=0;i<5;i++){const x=R()*W,y=H*(.06+R()*.18),l=W*(.08+R()*.14);c.strokeStyle='rgba(255,255,255,.35)';c.lineWidth=2+R()*3;c.lineCap='round';c.beginPath();c.moveTo(x,y);c.quadraticCurveTo(x+l*.5,y-H*.01,x+l,y+H*.004);c.stroke()}
+    // far snowy mountains, softened by haze
+    softRange(c,R,.42,.13,5,'#a6b4cc','#f4f7fb',.04);
+    hazeBand(c,H*.28,H*.5,'236,232,240',0,.55);
+    softRange(c,R,.49,.08,7,'#9eadc8','#eef2f8',.03);
+    hazeBand(c,H*.42,H*.56,'238,234,242',0,.45);
+    // a far forest of frosted firs: many small dab-painted trees
+    const h1=hillLine(c,R,.55,.012,7,'#e8eef6');
+    for(let x=-10;x<W+10;x+=W*(.006+R()*.008)){const y=h1(x)+H*.006,h=H*(.03+R()*.035),w=h*.32;
+      c.fillStyle=R()<.5?'rgba(110,132,160,.85)':'rgba(124,146,172,.85)';c.beginPath();c.moveTo(x-w,y);c.quadraticCurveTo(x-w*.3,y-h*.5,x,y-h);c.quadraticCurveTo(x+w*.3,y-h*.5,x+w,y);c.fill();
+      c.fillStyle='rgba(246,249,253,.9)';for(let k=0;k<3;k++){const yy=y-h*(.25+k*.25),ww=w*(1-k*.3)*.7;c.beginPath();c.ellipse(x,yy,ww,h*.05,0,Math.PI,TAU);c.fill()}}
+    hazeBand(c,H*.5,H*.6,'238,234,244',0,.32);
+    const h2=hillLine(c,R,.6,.012,6,'#eef3fa');
+    // the village: little houses with snowy roofs, warm windows and a church
+    const houses=[[.33,.022,'#c49a84'],[.36,.026,'#a8889e'],[.395,.02,'#c8a27e'],[.43,.024,'#9a98b4'],[.462,.018,'#c49488'],[.49,.02,'#b0a08a']];
+    houses.forEach(([x,sz,col])=>{const X=W*x,Y=h2(X+H*sz*.7)+H*.006,s=H*sz;
+      c.fillStyle=col;c.fillRect(X,Y-s,s*1.4,s+H*.008);c.fillStyle='rgba(0,0,0,.12)';c.fillRect(X+s*1.05,Y-s,s*.35,s+H*.008);
+      c.beginPath();c.moveTo(X-s*.2,Y-s*.92);c.quadraticCurveTo(X+s*.2,Y-s*1.5,X+s*.7,Y-s*1.8);c.quadraticCurveTo(X+s*1.2,Y-s*1.5,X+s*1.6,Y-s*.92);c.quadraticCurveTo(X+s*.7,Y-s*1.06,X-s*.2,Y-s*.92);c.fillStyle='#fbfdff';c.fill();
+      c.fillStyle='#ffd88a';c.fillRect(X+s*.25,Y-s*.62,s*.28,s*.28);c.fillRect(X+s*.86,Y-s*.62,s*.28,s*.28);
+      disc(c,X+s*.7,Y-s*.5,s*1.1,rad(c,X+s*.7,Y-s*.5,s*1.1,[[0,'rgba(255,214,140,.25)'],[1,'rgba(255,214,140,0)']]))});
+    {const X=W*.412,Y=h2(X)+H*.006,s=H*.02;c.fillStyle='#ece6de';c.fillRect(X,Y-s*3.4,s*1.1,s*3.4+H*.008);c.beginPath();c.moveTo(X-s*.15,Y-s*3.3);c.quadraticCurveTo(X+s*.4,Y-s*4.2,X+s*.55,Y-s*5.4);c.quadraticCurveTo(X+s*.7,Y-s*4.2,X+s*1.25,Y-s*3.3);c.fillStyle='#7a8aa6';c.fill();
+      c.fillStyle='#fbfdff';c.beginPath();c.moveTo(X-s*.15,Y-s*3.3);c.quadraticCurveTo(X+s*.2,Y-s*3.8,X+s*.4,Y-s*4.2);c.lineTo(X+s*.2,Y-s*3.3);c.fill();c.fillStyle='#ffd88a';c.beginPath();c.arc(X+s*.55,Y-s*2.5,s*.22,0,TAU);c.fill()}
+    // the frozen pond, with reeds and reflections of the sky
+    const px=W*.55,py=H*.672;ell(c,px,py,W*.21,H*.032,0,'#e4edf6');ell(c,px,py-H*.003,W*.195,H*.026,0,lin(c,py-H*.026,py+H*.026,[[0,'#c8dcee'],[.6,'#a8c4de'],[1,'#94b4d4']]));
+    c.save();c.beginPath();c.ellipse(px,py-H*.003,W*.195,H*.026,0,0,TAU);c.clip();
+    c.fillStyle='rgba(255,255,255,.35)';c.beginPath();c.moveTo(px-W*.12,py-H*.03);c.lineTo(px-W*.05,py-H*.03);c.lineTo(px-W*.09,py+H*.03);c.lineTo(px-W*.16,py+H*.03);c.fill();
+    c.strokeStyle='rgba(255,255,255,.75)';c.lineWidth=1.2;for(let i=0;i<12;i++){const x=px+(R()-.5)*W*.34,y=py+(R()-.5)*H*.03;c.beginPath();c.moveTo(x,y);c.quadraticCurveTo(x+W*.02,y-H*.003,x+W*(.03+R()*.04),y+H*.002);c.stroke()}
+    c.strokeStyle='rgba(120,150,190,.35)';c.lineWidth=1;for(let i=0;i<6;i++){const x=px+(R()-.5)*W*.3,y=py+(R()-.5)*H*.02;c.beginPath();c.moveTo(x,y);c.lineTo(x+W*.012,y+H*.006);c.lineTo(x+W*.02,y+H*.002);c.stroke()}
+    c.restore();
+    for(let i=0;i<26;i++){const side=i%2?1:-1,a=R()*.5,x=px+side*W*(.17+R()*.04),y=py-H*.01+R()*H*.02,h=H*(.025+R()*.03);c.strokeStyle='#a89070';c.lineWidth=1.4;c.beginPath();c.moveTo(x,y);c.quadraticCurveTo(x+side*2,y-h*.6,x+side*(3+a*6),y-h);c.stroke();if(i%3===0){c.fillStyle='#6a4a32';c.beginPath();c.ellipse(x+side*(3+a*6),y-h,1.8,4,side*.2,0,TAU);c.fill();ell(c,x+side*(3+a*6),y-h-4,2,1.2,0,'#fbfdff')}}
+    // the snowfield: soft drifts with blue shadows and glittering texture
+    const g=lin(c,H*.66,H,[[0,'#f8fbfe'],[.6,'#eef3fa'],[1,'#dde7f3']]);
+    c.beginPath();c.moveTo(0,H);c.lineTo(0,H*.69);c.bezierCurveTo(W*.2,H*.66,W*.32,H*.7,W*.42,H*.69);c.bezierCurveTo(W*.5,H*.7,W*.62,H*.705,W*.7,H*.69);c.bezierCurveTo(W*.82,H*.675,W*.92,H*.69,W,H*.68);c.lineTo(W,H);c.closePath();c.fillStyle=g;c.fill();
+    [[.08,.82,.18,.05],[.4,.92,.24,.06],[.72,.87,.2,.05],[.97,.96,.22,.07]].forEach(([x,y,rx,ry])=>{c.beginPath();c.ellipse(W*x,H*y,W*rx,H*ry,0,Math.PI,TAU);c.fillStyle='#fbfdff';c.fill();
+      c.beginPath();c.ellipse(W*x,H*y,W*rx,H*ry*.4,0,0,Math.PI);c.fillStyle='rgba(150,175,215,.22)';c.fill();c.strokeStyle='rgba(255,255,255,.9)';c.lineWidth=1.5;c.beginPath();c.ellipse(W*x,H*y,W*rx*.96,H*ry*.96,0,Math.PI*1.15,Math.PI*1.6);c.stroke()});
+    snowTex(c,R,H*.69,H);
+    // dried grasses and seed heads poking through the snow
+    for(let i=0;i<160;i++){const x=R()*W,y=H*(.7+Math.pow(R(),.8)*.3),h=H*(.012+R()*.02)*(y/H);if(Math.abs(x-px)<W*.2&&Math.abs(y-py)<H*.04)continue;c.strokeStyle=R()<.5?'rgba(168,140,100,.75)':'rgba(140,116,86,.7)';c.lineWidth=1.1;c.beginPath();c.moveTo(x,y);c.quadraticCurveTo(x+(R()-.5)*4,y-h*.6,x+(R()-.5)*6,y-h);c.stroke()}
+    // a path of footprints leading from the cabin to the pond, and hare tracks
+    for(let k=0;k<14;k++){const q=k/13,x=W*(.22+q*.24),y=H*(.79-q*.09)+(k%2?H*.006:-H*.004);ell(c,x,y,W*.004*(1.2-q*.5),H*.004*(1.2-q*.5),.2,'rgba(140,165,205,.45)')}
+    for(let k=0;k<8;k++){const x=W*(.6+k*.035),y=H*(.93-k*.014);ell(c,x,y,3,5,.3,'rgba(130,160,200,.45)');ell(c,x+6,y+2,3,5,.3,'rgba(130,160,200,.45)');ell(c,x-7,y+6,2,2.6,0,'rgba(130,160,200,.4)')}
+    // the cabin, with a woodpile and snowy bushes
+    cabin(c,W*.14,H*.72,H*.21,'#ffd27a');
+    {const X=W*.215,Y=H*.722,s=H*.03;for(let r=0;r<3;r++)for(let k=0;k<4-r;k++){const x=X+k*s*.62+r*s*.31,y=Y-r*s*.5;disc(c,x,y-s*.25,s*.3,'#9a6a44');disc(c,x,y-s*.25,s*.2,'#d8b088');disc(c,x,y-s*.25,s*.07,'#9a6a44')}ell(c,X+s*.9,Y-s*1.45,s*1.3,s*.25,0,'#fbfdff')}
+    const bush=(x,y,s)=>{dabs(c,R,x,y-s*.3,s*.9,s*.6,40,['#2e5a42','#3a6a50','#4a7a5e'],s*.16);for(let k=0;k<12;k++)ell(c,x+(R()-.5)*s*1.5,y-s*(.55+R()*.4),s*(.2+R()*.15),s*.1,0,'#fbfdff')};
+    bush(W*.255,H*.738,H*.034);bush(W*.05,H*.745,H*.028);bush(W*.82,H*.705,H*.022);
+    // sled resting in the snow
+    {const X=W*.29,Y=H*.8,s=H*.05;ell(c,X,Y+2,s*1.1,s*.08,0,'rgba(120,150,200,.3)');c.strokeStyle='#8a4a2a';c.lineWidth=2.4;c.beginPath();c.moveTo(X-s,Y);c.lineTo(X+s*.9,Y);c.quadraticCurveTo(X+s*1.3,Y,X+s*1.2,Y-s*.35);c.stroke();
+      c.fillStyle='#c8463a';c.beginPath();c.roundRect?c.roundRect(X-s*.9,Y-s*.45,s*1.7,s*.2,s*.08):c.rect(X-s*.9,Y-s*.45,s*1.7,s*.2);c.fill();c.fillRect(X-s*.6,Y-s*.3,s*.1,s*.3);c.fillRect(X+s*.5,Y-s*.3,s*.1,s*.3);ell(c,X,Y-s*.45,s*.85,s*.08,0,'#fbfdff');
+      c.strokeStyle='#c8463a';c.lineWidth=1.2;c.beginPath();c.moveTo(X+s*1.2,Y-s*.35);c.quadraticCurveTo(X+s*1.6,Y-s*.1,X+s*1.5,Y+s*.05);c.stroke()}
+    // a rustic fence half buried in a drift
+    c.lineCap='round';for(let k=0;k<6;k++){const x=W*(.015+k*.04),y=H*(.955-k*.012);c.strokeStyle='#7a5a42';c.lineWidth=W*.008;c.beginPath();c.moveTo(x,y);c.lineTo(x+W*.002,y-H*(.07-k*.004));c.stroke();ell(c,x+W*.002,y-H*(.07-k*.004),W*.008,H*.007,0,'#fbfdff')}
+    c.strokeStyle='#6e5038';c.lineWidth=H*.007;c.beginPath();c.moveTo(0,H*.915);c.quadraticCurveTo(W*.1,H*.89,W*.22,H*.875);c.stroke();ell(c,W*.1,H*.894,W*.1,H*.005,-.1,'#fbfdff');
+    c.beginPath();c.ellipse(W*.1,H,W*.2,H*.07,0,Math.PI,TAU);c.fillStyle='#fbfdff';c.fill();
+    // soft blue shadows of the big trees
+    {const {S,tx,ty}=winterTree();c.save();c.translate(tx+S*.1,ty+H*.004);c.scale(1,.08);disc(c,0,0,S*.5,rad(c,0,0,S*.5,[[0,'rgba(110,140,190,.3)'],[1,'rgba(110,140,190,0)']]));c.restore()}
+  },
+  props(R){
+    const snow=Array.from({length:110},()=>({x:R(),y:R(),v:.35+R()*.8,r:.8+R()*2.2,ph:R()*6}));
+    const smoke=Array.from({length:7},(_,i)=>({o:i/7}));
+    const spark=Array.from({length:60},()=>({x:R(),y:.69+R()*.31,ph:R()*6,s:.5+R()}));
+    const {S,tx,ty}=winterTree();
+    const xm=xmasSprite(S);
+    const firs=[[W*.035,H*.9,H*.7,1],[Math.min(W*.985,tx+S*.62),H*.83,H*.5,2],[W*.72,H*.66,H*.16,3],[W*.76,H*.665,H*.12,4],[W*.3,H*.69,H*.13,5]].map(([x,y,s,k])=>({x,y,S:s,sp:spruceSprite(rng(500+k),s,k<3?['#173a2a','#1e4632','#26543c','#2f6246','#3a7052','#4a805e']:['#4a6a6a','#557676','#628282','#708e8e'])}));
+    const birch=bareBirchSprite(rng(31),H*.48);
+    return [
+      (c,t)=>{c.save();c.translate(W*.31,H*.712);c.rotate(wind(t,W*.2)*.006);c.drawImage(birch.cv,-birch.w/2,-birch.h,birch.w,birch.h);c.restore()},
+      (c,t)=>{const cx=W*.14,cy=H*.72,cs=H*.21;smoke.forEach(p=>{const q=(t*.045+p.o)%1;c.globalAlpha=.45*(1-q);disc(c,cx+cs*.345+q*W*.035+Math.sin(t*.6+p.o*9)*6,cy-cs*1.12-q*H*.22,H*(.01+q*.035),'#f2f5fa')});c.globalAlpha=1;
+        const f=.6+.4*Math.sin(t*2.1);[[-.33,-.3],[.32,-.3]].forEach(([dx,dy])=>disc(c,cx+cs*dx,cy+cs*dy,cs*.3,rad(c,cx+cs*dx,cy+cs*dy,cs*.3,[[0,`rgba(255,210,120,${.3*f})`],[1,'rgba(255,210,120,0)']])))},
+      (c,t)=>spark.forEach(s=>{c.globalAlpha=Math.pow(Math.abs(Math.sin(t*s.s+s.ph)),8);disc(c,s.x*W,s.y*H,1.5,'#ffffff')}),
+      (c,t)=>{c.globalAlpha=1;firs.sort((a,b)=>a.y-b.y).forEach(f=>{c.save();c.translate(f.x,f.y);c.rotate(wind(t,f.x)*.004);c.drawImage(f.sp.cv,-f.sp.w/2,-f.sp.h+f.S*.02,f.sp.w,f.sp.h);c.restore()})},
+      (c,t)=>{c.save();c.translate(tx,ty);c.rotate(wind(t,tx)*.003);c.drawImage(xm.cv,-xm.w/2,-xm.h+S*.02,xm.w,xm.h);c.restore();
+        const n=typeof adventOpened==='function'?adventOpened():0;for(let i=0;i<n&&i<24;i++)drawDecor(c,ADVENT_DECOR[i],tx,ty,S,t,i)},
+      (c,t)=>{c.fillStyle='#fff';snow.forEach(s=>{c.globalAlpha=.55+.35*(s.r/3);const y=(s.y*H+t*s.v*H*.03)%H,x=s.x*W+Math.sin(t*.6+s.ph)*18;c.beginPath();c.arc(x,y,s.r,0,TAU);c.fill()});c.globalAlpha=1}
+    ]}
+};
+
+
 /* haze grain texture, made once */
 (()=>{const c=document.createElement('canvas');c.width=c.height=180;const g=c.getContext('2d'),id=g.createImageData(180,180);
   for(let i=0;i<id.data.length;i+=4){const v=Math.random()*255;id.data[i]=id.data[i+1]=id.data[i+2]=v;id.data[i+3]=Math.random()*70}
@@ -6475,6 +6909,14 @@ Object.assign(FX,{
     o.globalCompositeOperation='destination-out';o.fillStyle='#000';try{ausForeground(o)}catch(err){}o.globalCompositeOperation='source-over';
     c.save();c.setTransform(1,0,0,1,0,0);c.globalAlpha=e;c.drawImage(off,0,0);c.restore()}
 });
+Object.assign(FX,{
+  seasons(c,w,h,T,e,P){const se=curSeason();
+    if(se==='spring'){P.forEach((p,i)=>{for(let k=0;k<3;k++){const q=((T*.06*(p.s+.4))+p.o+k*.33)%1,x=((p.x+k*.37)%1)*w+Math.sin(T*1.3+p.o*9+k)*40+T*30*p.s,y=h*(-.05+q*1.1);c.globalAlpha=e*.95;c.save();c.translate(x%(w+40)-20,y);c.rotate(T*2+p.o*9+k);c.fillStyle=(i+k)%3?'#fde4ee':'#ffffff';c.beginPath();c.ellipse(0,0,5,3,0,0,7);c.fill();c.fillStyle='rgba(240,170,200,.6)';c.beginPath();c.ellipse(1,0,2,1.2,0,0,7);c.fill();c.restore()}})}
+    else if(se==='summer'){c.globalAlpha=e*.5;const g=c.createLinearGradient(0,0,0,h);g.addColorStop(0,'rgba(40,40,90,.75)');g.addColorStop(.6,'rgba(200,110,70,.35)');g.addColorStop(1,'rgba(30,30,60,.45)');c.fillStyle=g;c.fillRect(0,0,w,h);c.globalCompositeOperation='lighter';
+      P.forEach((p,i)=>{for(let k=0;k<2;k++){const x=((p.x+k*.5)%1)*w+Math.sin(T*.5*p.s+p.o*9+k)*40,y=h*(.5+((p.o+k*.3)%1)*.45)+Math.cos(T*.4*p.s+p.o*7)*25,a=e*Math.pow(.5+.5*Math.sin(T*3*p.s+p.o*20+k),2);const r=c.createRadialGradient(x,y,0,x,y,12);r.addColorStop(0,`rgba(230,255,140,${a})`);r.addColorStop(1,'rgba(230,255,140,0)');c.globalAlpha=1;c.fillStyle=r;c.beginPath();c.arc(x,y,12,0,7);c.fill()}});c.globalCompositeOperation='source-over'}
+    else if(se==='autumn'){const cols=['#c8281e','#e8a030','#d8782a','#f2c84a','#a8401e'];P.forEach((p,i)=>{for(let k=0;k<3;k++){const ang=T*(.9+p.s*.6)+p.o*20+k*2.1,rad=h*(.08+((p.x+k*.3)%1)*.3),cx=w*(.15+((T*.05+p.o*.6+k*.3)%1)*.9),x=cx+Math.cos(ang)*rad*1.6,y=h*.5+Math.sin(ang)*rad*.8;c.globalAlpha=e;c.save();c.translate(x,y);c.rotate(ang*2);c.fillStyle=cols[(i+k)%5];c.beginPath();c.ellipse(0,0,8,4,0,0,7);c.fill();c.strokeStyle='rgba(80,40,20,.4)';c.lineWidth=.8;c.beginPath();c.moveTo(-8,0);c.lineTo(8,0);c.stroke();c.restore()}})}
+    else{c.globalAlpha=e*.25;c.fillStyle='#dfe8f2';c.fillRect(0,0,w,h);c.fillStyle='#fff';P.forEach(p=>{for(let k=0;k<4;k++){const q=((T*.05*(p.s+.4))+p.o+k*.25)%1,x=((p.x+k*.29)%1)*w+Math.sin(T*.9+p.o*9+k)*24,y=h*(-.05+q*1.1),r=2+p.s*3;c.globalAlpha=e*.95;c.beginPath();c.arc(x,y,r,0,7);c.fill()}})}}
+});
 function hideSun(c,x,y,r,xr,e){try{const n=12,g=c.createLinearGradient(0,y-r,0,y+r);for(let i=0;i<=n;i++){const yy=Math.max(0,y-r+2*r*i/n),d=bgx.getImageData(Math.round(xr*DPR),Math.round(yy*DPR),1,1).data;g.addColorStop(i/n,`rgb(${d[0]},${d[1]},${d[2]})`)}
   c.save();c.fillStyle=g;[[1,.15],[.9,.3],[.8,.55],[.7,1]].forEach(([k,al])=>{c.globalAlpha=e*al;c.beginPath();c.arc(x,y,r*k,0,7);c.fill()});c.restore()}catch(err){}}
 Object.assign(FX,{
@@ -6524,10 +6966,11 @@ function pickAnimal(demo){
   const rareOk=!demo&&(st.sess?st.sess.quiet>=180:false)&&!critters.some(c=>c.a.r==='r');
   if(!rareOk&&r<WEIGHT.r)r=WEIGHT.r+Math.random()*(1-WEIGHT.r);
   if(demo&&r<WEIGHT.r+WEIGHT.u)r=1;
-  const kt=biome.animals.filter(a=>a.id.startsWith('kt'));
+  const here=biome.animals.filter(inSeasonNow);
+  const kt=here.filter(a=>a.id.startsWith('kt'));
   if(kt.length&&rareOk&&Math.random()<.1)return kt[Math.random()*kt.length|0];   // our own class figures: about 1 in 10 visitors once the class has been quiet
   const tier=r<WEIGHT.r?'r':r<WEIGHT.r+WEIGHT.u?'u':'c';
-  const pool=biome.animals.filter(a=>a.r===tier&&!a.id.startsWith('kt'));return pool[Math.random()*pool.length|0];
+  const pool=here.filter(a=>a.r===tier&&!a.id.startsWith('kt'));return pool[Math.random()*pool.length|0];
 }
 function spawn(opt={}){
   const a=opt.animal||pickAnimal(opt.demo), z=a.z||biome.zone, u=Math.min(H*.12,W*.09);
@@ -6537,6 +6980,7 @@ function spawn(opt={}){
     const p = a.m==='stand' ? .72+.5*(y-z[0])/Math.max(.001,z[1]-z[0]) : .85+Math.random()*.3;
     const size=u*a.s*p*1.4;
     let minD=Infinity;critters.forEach(c=>{const d=Math.hypot((c.x-x)*W,(c.y-y)*H)-(c.size+size)*.42;minD=Math.min(minD,d)});
+    if(a.m==='stand'&&AVOID[biome.id]&&AVOID[biome.id](x,y))minD=-1e9;
     if(!best||minD>best.minD)best={x,y,p,size,minD};
     if(minD>0)break;
   }
@@ -6634,7 +7078,7 @@ function wanderTick(dt){
       const reach=a.m==='stand'?.05+Math.random()*.08:a.m==='swim'?.1+Math.random()*.22:.08+Math.random()*.2;
       const mg=Math.max(.06,c.size*.55/W+.01),xr=a.xr||[mg,1-mg];tx=clamp(c.x+(c.x<mg+.05?1:c.x>1-mg-.05?-1:Math.random()<.5?-1:1)*reach,Math.max(mg,xr[0]),Math.min(1-mg,xr[1]));
       ty=a.m==='stand'?c.y:clamp(c.y+(Math.random()-.5)*(z[1]-z[0])*.5,z[0],z[1]);
-      ok=Math.abs(tx-c.x)>.03&&critters.every(o=>o===c||Math.hypot((o.x-tx)*W,(o.y-ty)*H)>(o.size+c.size)*.35);
+      ok=Math.abs(tx-c.x)>.03&&!(a.m==='stand'&&AVOID[biome.id]&&(AVOID[biome.id](tx,ty)||AVOID[biome.id]((tx+c.x)/2,ty)))&&critters.every(o=>o===c||Math.hypot((o.x-tx)*W,(o.y-ty)*H)>(o.size+c.size)*.35);
     }
     if(!ok){w.t=2+Math.random()*3;return}
     const v=c.size*(a.m==='stand'?.16:a.m==='swim'?.13:.2)*(SLOW.has(a.id)?.22:1)*(.8+Math.random()*.4);
@@ -7199,6 +7643,7 @@ const bindSel=(id,key,after)=>{$(id).value=S[key];$(id).onchange=e=>{S[key]=e.ta
 bindSel('#sMode','loudMode',()=>document.body.classList.remove('paused'));
 bindSel('#sNum','showNum',()=>document.body.classList.toggle('nonum',S.showNum==='off'));
 bindSel('#sChime','chime');
+bindSel('#sSeasonW','seasonW',()=>{if(biome.id==='seasons'){hide(critters.filter(c=>c.a.season&&!inSeasonNow(c.a)),true);paint()}});
 bindSel('#sAuto','autoHide');
 bindSel('#sMotion','motion',()=>renderScene());
 bindSel('#sJourney','journey',()=>{if(!unlockedSet().has(biome.id))setBiome(BYID(JOURNEY[0]))});
@@ -7206,7 +7651,7 @@ bindSel('#sSeason','seasonAll',()=>{if(!unlockedSet().has(biome.id))setBiome(BYI
 document.body.classList.toggle('nonum',S.showNum==='off');
 let resetArm=false;
 $('#settingsBtn').onclick=()=>{$('#resetMsg').textContent='';resetArm=false;$('#resetLog').textContent=t('resetLog');if(!st.cal){$('#calMsg').textContent=t('calHelp');$('#calMsg').classList.remove('live')}$('#setScrim').hidden=false};
-$('#pvAll').onclick=()=>{$('#setScrim').hidden=true;hide(critters.filter(c=>c.demo),true);biome.animals.forEach((a,i)=>setTimeout(()=>{try{spawn({animal:a,demo:true})}catch(e){}},300+i*140))};
+$('#pvAll').onclick=()=>{$('#setScrim').hidden=true;hide(critters.filter(c=>c.demo),true);biome.animals.filter(inSeasonNow).forEach((a,i)=>setTimeout(()=>{try{spawn({animal:a,demo:true})}catch(e){}},300+i*140))};
 $('#pvMoment').onclick=()=>{$('#setScrim').hidden=true;setTimeout(()=>playMoment(biome),250)};
 $('#pvClear').onclick=()=>{hide(critters.filter(c=>c.demo),true);$('#setScrim').hidden=true};
 $('#resetLog').onclick=()=>{if(!resetArm){resetArm=true;$('#resetLog').textContent=t('resetArm');$('#resetMsg').textContent=t('resetWarn',{cls:className()});return}
