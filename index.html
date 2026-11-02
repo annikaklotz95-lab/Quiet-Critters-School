@@ -621,7 +621,7 @@ body.paused .critter .sprite,body.paused .critter .pose{animation-play-state:pau
       <div class="field"><label for="sSeason" data-i18n="seasonSet"></label>
         <select id="sSeason"><option value="off" data-i18n="seasonOnly"></option><option value="on" data-i18n="seasonAll"></option></select><p data-i18n="seasonHint"></p></div>
       <div class="field"><label for="sSeasonW" data-i18n="szSet"></label>
-        <select id="sSeasonW"><option value="auto" data-i18n="szAuto"></option><option value="spring" data-i18n="szSpring"></option><option value="summer" data-i18n="szSummer"></option><option value="autumn" data-i18n="szAutumn"></option><option value="winter" data-i18n="szWinter"></option></select><p data-i18n="szHint"></p></div>
+        <select id="sSeasonW"><option value="auto" data-i18n="szAuto"></option><option value="1" data-i18n="szM1"></option><option value="2" data-i18n="szM2"></option><option value="3" data-i18n="szM3"></option><option value="4" data-i18n="szM4"></option><option value="5" data-i18n="szM5"></option><option value="6" data-i18n="szM6"></option><option value="7" data-i18n="szM7"></option><option value="8" data-i18n="szM8"></option><option value="9" data-i18n="szM9"></option><option value="10" data-i18n="szM10"></option><option value="11" data-i18n="szM11"></option><option value="12" data-i18n="szM12"></option></select><p data-i18n="szHint"></p></div>
       <div class="field"><label for="sMax"><span data-i18n="maxOn"></span><output id="oMax"></output></label><input type="range" id="sMax" min="3" max="20"></div>
       <div class="field"><label for="sMotion" data-i18n="motion"></label>
         <select id="sMotion"><option value="on" data-i18n="motionOn"></option><option value="off" data-i18n="motionOff"></option></select></div>
@@ -4142,9 +4142,12 @@ Object.assign(STR.de,{pvSet:'Ausprobieren',pvAll:'Alle Tiere dieser Welt zeigen'
 /* ---------- The apple tree through the seasons ---------- */
 (()=>{
   const SN={en:{spring:'in spring',summer:'in summer',autumn:'in autumn',winter:'in winter'},de:{spring:'im Frühling',summer:'im Sommer',autumn:'im Herbst',winter:'im Winter'}};
-  const se=()=>typeof curSeason==='function'?curSeason():'spring';
-  Object.defineProperty(BIOME_NAMES.en,'seasons',{get:()=>'The apple tree '+SN.en[se()],enumerable:true,configurable:true});
-  Object.defineProperty(BIOME_NAMES.de,'seasons',{get:()=>'Der Apfelbaum '+SN.de[se()],enumerable:true,configurable:true});
+  const se=()=>typeof window.curSeason==='function'?window.curSeason():'spring';
+  const MN={en:['January','February','March','April','May','June','July','August','September','October','November','December'],de:['Januar','Februar','März','April','Mai','Juni','Juli','August','September','Oktober','November','Dezember']};
+  const mo=()=>typeof window.curMonth==='function'?window.curMonth():new Date().getMonth()+1;
+  Object.defineProperty(BIOME_NAMES.en,'seasons',{get:()=>'The apple tree in '+MN.en[mo()-1],enumerable:true,configurable:true});
+  Object.defineProperty(BIOME_NAMES.de,'seasons',{get:()=>'Der Apfelbaum im '+MN.de[mo()-1],enumerable:true,configurable:true});
+  for(let m=1;m<=12;m++){STR.en['szM'+m]='Always '+MN.en[m-1];STR.de['szM'+m]='Immer '+MN.de[m-1]}
   const MT={
     en:{spring:['Blossom snow','A single apple tree can have tens of thousands of blossoms. Bees carry pollen from flower to flower, and only then can apples grow.'],
         summer:['Fireflies','Fireflies make light with their bodies without getting warm. They flash to find each other on summer nights.'],
@@ -4224,8 +4227,8 @@ Object.assign(ANIMAL_TEXT.de,{
   szwfox:['Fuchs im Winter','Im Winter bekommt der Fuchs ein dickes Fell und wickelt beim Schlafen den buschigen Schwanz um seine Nase.'],
   szlongowl:['Waldohreule','Im Winter schlafen Waldohreulen oft in Gruppen zusammen in den Bäumen.']
 });
-Object.assign(STR.en,{szSet:'Season of the apple tree',szAuto:'Follow the calendar',szSpring:'Always spring',szSummer:'Always summer',szAutumn:'Always autumn',szWinter:'Always winter',szHint:'The apple tree world changes with the real seasons. Here you can look at any season straight away.'});
-Object.assign(STR.de,{szSet:'Jahreszeit beim Apfelbaum',szAuto:'Nach dem Kalender',szSpring:'Immer Frühling',szSummer:'Immer Sommer',szAutumn:'Immer Herbst',szWinter:'Immer Winter',szHint:'Die Apfelbaum-Welt ändert sich mit den echten Jahreszeiten. Hier kannst du jede Jahreszeit sofort ansehen.'});
+Object.assign(STR.en,{szSet:'Month at the apple tree',szAuto:'Follow the calendar',szHint:'The apple tree world changes with the real months. Here you can look at any month straight away.'});
+Object.assign(STR.de,{szSet:'Monat beim Apfelbaum',szAuto:'Nach dem Kalender',szHint:'Die Apfelbaum-Welt ändert sich mit den echten Monaten. Hier kannst du jeden Monat sofort ansehen.'});
 
 </script>
 <script>
@@ -4375,7 +4378,9 @@ const TOTAL = BIOMES.reduce((n,b)=>n+b.animals.length,0);
 const RARES = BIOMES.reduce((n,b)=>n+b.animals.filter(a=>a.r==='r').length,0);
 const WEIGHT = {c:.72,u:.245,r:.035};   // per animal: a common one turns up about 6x as often as a rare one, an uncommon one about 3x
 /* the apple tree world follows the calendar, unless a season is picked in the settings */
-function curSeason(){if(S.seasonW&&S.seasonW!=='auto')return S.seasonW;const m=new Date().getMonth()+1;return m>=3&&m<=5?'spring':m>=6&&m<=8?'summer':m>=9&&m<=11?'autumn':'winter'}
+function curMonth(){const v=S.seasonW;if(v&&v!=='auto'){const legacy={spring:4,summer:7,autumn:10,winter:1};return legacy[v]||(+v)||new Date().getMonth()+1}return new Date().getMonth()+1}
+function curSeason(){const m=curMonth();return m>=3&&m<=5?'spring':m>=6&&m<=8?'summer':m>=9&&m<=11?'autumn':'winter'}
+window.curMonth=curMonth;window.curSeason=curSeason;
 const inSeasonNow=a=>!a.season||a.season===curSeason();
 const AVOID={winter:(x,y)=>{const t=typeof winterTree==='function'?winterTree():null,tx=t?t.tx/W:.8,S=t?t.S/W:.3;
     return ((x-.55)/.23)**2+((y-.672)/.06)**2<1   // the frozen pond
@@ -6561,6 +6566,25 @@ const SZ={
     far:'#e6eef4',fields:['rgba(255,255,255,.6)','rgba(200,214,228,.4)','rgba(240,246,250,.6)','rgba(214,224,234,.45)'],
     hedge:['#6a6a6e','#7a7a80','#8a8a8e','#5a5a60'],meadow:[[0,'#f2f6fa'],[.5,'#e6eef5'],[1,'#d4e0ea']],grassD:'rgba(120,140,160,.25)',grassL:'rgba(255,255,255,.5)',tufts:['#a89a7a','#8a7e64','#c0b490'],cloud:'rgba(250,252,255,.75)'}
 };
+/* each month nudges its season: different light, fields, ground and details */
+const SZ_MONTH={
+  1:{sky:[[0,'#6f9ccc'],[.6,'#c2d6ea'],[1,'#f0f4f8']],sun:[.24,.3,.24,'255,244,230','#fffaf2']},
+  2:{sky:[[0,'#8aa2bc'],[.6,'#ccd6de'],[1,'#e8ece8']],meadow:[[0,'#e8eee8'],[.5,'#dce6e0'],[1,'#c8d6d0']]},
+  3:{sky:[[0,'#86b4dc'],[.6,'#cfe0ea'],[1,'#eef0e4']],far:'#b4c49a',fields:['rgba(150,110,70,.6)','rgba(140,180,100,.45)','rgba(170,130,90,.5)','rgba(130,170,90,.45)','rgba(160,120,80,.5)'],
+     hedge:['#6e6a52','#7e7a5a','#8a9a5a','#6a7a4a'],meadow:[[0,'#bccc8e'],[.45,'#9cb86c'],[1,'#6a8a46']],grassL:'rgba(220,230,180,.4)'},
+  4:{},
+  5:{meadow:[[0,'#a8d872'],[.45,'#86c458'],[1,'#529236']]},
+  6:{sky:[[0,'#5aa0de'],[.6,'#b0d8ee'],[1,'#f0f4e2']],fields:['rgba(150,200,90,.5)','rgba(110,170,70,.45)','rgba(200,220,120,.45)','rgba(140,190,80,.45)','rgba(180,210,110,.45)'],meadow:[[0,'#b0d870'],[.45,'#8cc456'],[1,'#56923a']]},
+  7:{},
+  8:{sky:[[0,'#5a9ad6'],[.6,'#b8d8ea'],[1,'#f2eed8']],far:'#c4bc7c',fields:['rgba(230,200,110,.75)','rgba(214,180,90,.7)','rgba(150,170,80,.4)','rgba(240,214,130,.7)','rgba(200,170,90,.6)'],meadow:[[0,'#bcc870'],[.45,'#9cb052'],[1,'#6a8a36']],grassL:'rgba(240,230,150,.4)',tufts:['#9aa850','#c8b860','#8a9a40','#d8c070']},
+  9:{sky:[[0,'#5f9ad0'],[.6,'#c4dae6'],[1,'#f2ead2']],far:'#b4b878',fields:['rgba(160,120,70,.55)','rgba(140,170,80,.45)','rgba(210,180,100,.55)','rgba(120,150,70,.45)','rgba(190,150,90,.5)'],
+     hedge:['#4e7a34','#6a8a3a','#8a9a3e','#a8a042'],meadow:[[0,'#acc46c'],[.45,'#8aaa4e'],[1,'#5a8034']],tufts:['#7a9a40','#9aac4e','#b8b05a','#5a8034']},
+  10:{},
+  11:{sky:[[0,'#8a98a8'],[.6,'#c8ccce'],[1,'#e2ddd2']],sun:[.2,.32,.2,'250,236,210','#f6efe2'],far:'#a8a48a',fields:['rgba(130,110,80,.5)','rgba(120,130,90,.4)','rgba(150,130,100,.45)','rgba(110,120,80,.4)'],
+     hedge:['#6a5a44','#7a6a4e','#8a6a3a','#5e5440'],meadow:[[0,'#a4a47a'],[.45,'#868a5a'],[1,'#5e6640']],grassD:'rgba(70,70,40,.4)',grassL:'rgba(210,200,160,.3)',tufts:['#8a8a5a','#a09a68','#6e7048'],cloud:'rgba(230,230,228,.7)',fog:1},
+  12:{sky:[[0,'#7e96b8'],[.6,'#c8d2e0'],[1,'#ece8ec']]}
+};
+const szPal=(se,m)=>Object.assign({},SZ[se],SZ_MONTH[m]||{});
 const SZ_BROOK=[[-.03,.705],[.06,.745],[.13,.8],[.17,.86],[.22,.93],[.27,1.02]];
 function BROOK_X(y){if(y<SZ_BROOK[0][1])return -1;for(let i=1;i<SZ_BROOK.length;i++){const [x0,y0]=SZ_BROOK[i-1],[x1,y1]=SZ_BROOK[i];if(y<=y1)return x0+(x1-x0)*(y-y0)/(y1-y0)}return SZ_BROOK[SZ_BROOK.length-1][0]}
 const brookW=y=>.012+(y-.7)*.12;
@@ -6581,9 +6605,9 @@ function appleSkeleton(R,S){
   for(let i=0;i<7;i++)blobs.push([(i/6-.5)*S*.5,-S*(.5+R()*.08),S*(.07+R()*.03)]);
   const at=(sg,t)=>[(1-t)*(1-t)*sg.x+2*(1-t)*t*sg.cx+t*t*sg.x2,(1-t)*(1-t)*sg.y+2*(1-t)*t*sg.cy+t*t*sg.y2];
   const main=segs.filter(sg=>sg.d===0);
-  return {segs,blobs,swing:at(main[3],.72),feeder:at(main[0],.7)};
+  return {segs,blobs,swing:at(main[3],.72),swingSeg:main[3],feeder:at(main[0],.7)};
 }
-function appleTreeSprite(R,S,season){
+function appleTreeSprite(R,S,season,M){M=M||({spring:4,summer:7,autumn:10,winter:1}[season]);
   const W2=S*2.3,H2=S*1.4,sk=appleSkeleton(R,S);
   const sp=sprite(W2,H2,c=>{c.translate(W2/2,H2-S*.02);
     const limb=s=>{const N=s.d>=3?3:8;c.lineCap='round';for(let i=0;i<N;i++){const t0=i/N,t1=(i+1)/N,p=t=>[(1-t)*(1-t)*s.x+2*(1-t)*t*s.cx+t*t*s.x2,(1-t)*(1-t)*s.y+2*(1-t)*t*s.cy+t*t*s.y2],[ax,ay]=p(t0),[bx,by]=p(t1),w=s.w+(s.w2-s.w)*(t0+t1)/2;
@@ -6594,24 +6618,41 @@ function appleTreeSprite(R,S,season){
     c.beginPath();c.moveTo(-S*.17,0);c.quadraticCurveTo(-S*.07,-S*.02,-S*.065,-S*.1);c.quadraticCurveTo(-S*.075,-S*.2,-S*.035,-S*.29);c.lineTo(S*.06,-S*.29);c.quadraticCurveTo(S*.05,-S*.18,S*.07,-S*.09);c.quadraticCurveTo(S*.08,-S*.02,S*.18,0);c.closePath();c.fill();
     c.strokeStyle='rgba(30,20,12,.35)';c.lineWidth=1.4;for(let k=0;k<6;k++){const x=-S*.05+k*S*.019;c.beginPath();c.moveTo(x,-S*.01);c.bezierCurveTo(x-S*.01,-S*.1,x+S*.012,-S*.18,x+S*.004,-S*.28);c.stroke()}
     ell(c,-S*.015,-S*.17,S*.016,S*.024,0,'#2a1c12');ell(c,-S*.012,-S*.168,S*.01,S*.016,0,'#1a120c');
-    const cols={summer:['#2c5a22','#3a6e2a','#4a8034','#5e9440','#74a84c','#8cbc5c'],autumn:['#a8401e','#c8582a','#de7a2e','#e8a030','#f2c84a','#b89a3a']}[season];
-    if(season==='summer')sk.blobs.forEach(([x,y,r])=>disc(c,x,y+r*.12,r*.9,'#2a5220'));
     sk.segs.slice(1).sort((a,b)=>a.d-b.d).forEach(limb);
     const cnt=(r,k)=>Math.round(r*r/(S*S*.0001)*k);
-    if(season==='spring'){
+    const apples=(n,colsA,rk)=>{for(let i=0;i<n;i++){const b=sk.blobs[R()*sk.blobs.length|0],a=R()*TAU,k=Math.sqrt(R())*.85,x=b[0]+Math.cos(a)*b[2]*k,y=b[1]+Math.sin(a)*b[2]*k,r=S*rk;disc(c,x,y,r,colsA[(R()*colsA.length)|0]);disc(c,x-r*.3,y-r*.35,r*.3,'rgba(255,255,255,.5)')}};
+    const snowBranches=k=>{c.lineCap='round';sk.segs.slice(1).forEach(s=>{const dx=s.x2-s.x,dy=s.y2-s.y;if(Math.abs(dy)>Math.abs(dx)*(1+k*.6))return;if(k<.6&&s.d>=3&&R()>k)return;const w=(s.w+s.w2)/2;c.strokeStyle='#fbfdff';c.lineWidth=Math.max(1.2,w*(.3+.25*k));c.beginPath();c.moveTo(s.x,s.y-s.w*.42);c.quadraticCurveTo(s.cx,s.cy-w*.45,s.x2,s.y2-s.w2*.42);c.stroke()});
+      c.fillStyle='#fbfdff';c.beginPath();c.ellipse(S*.012,-S*.29,S*.05*k,S*.013*k,0,Math.PI,TAU);c.fill()};
+    const shrivelled=()=>[[-.2,-.55],[.2,-.6],[.04,-.76]].forEach(([dx,dy])=>{disc(c,dx*S,dy*S,S*.012,'#8a3a26');c.strokeStyle='#4a3628';c.lineWidth=1;c.beginPath();c.moveTo(dx*S,dy*S-S*.012);c.lineTo(dx*S,dy*S-S*.03);c.stroke()});
+    const blossom=['#e6a8be','#f2bfd0','#f8d4e0','#fde8f0','#ffffff'],fresh=['#7aae4a','#8cc058','#a2d06a','#b4dc78'];
+    if(M===3){ // buds: the first green tips and a few white flower buds on bare branches
+      sk.blobs.forEach(([x,y,r])=>dabs(c,R,x,y,r*.9,r*.8,cnt(r,.12),['#9cc860','#b4d870','#c8e488'],S*.008));
+      sk.blobs.forEach(([x,y,r])=>dabs(c,R,x,y,r*.8,r*.7,cnt(r,.05),['#ffffff','#f8dce6'],S*.006));
+    }else if(M===4){
       sk.blobs.forEach(([x,y,r])=>disc(c,x,y+r*.25,r*.8,'rgba(196,120,150,.35)'));
-      sk.blobs.forEach(([x,y,r])=>dabs(c,R,x,y,r*1.05,r*.95,cnt(r,.3),['#7aae4a','#8cc058','#a2d06a'],S*.012));
-      sk.blobs.forEach(([x,y,r])=>dabs(c,R,x,y,r,r*.9,cnt(r,.85),['#e6a8be','#f2bfd0','#f8d4e0','#fde8f0','#ffffff'],S*.011,'rgba(255,255,255,.8)'));
-    }else if(season==='summer'){
+      sk.blobs.forEach(([x,y,r])=>dabs(c,R,x,y,r*1.05,r*.95,cnt(r,.3),fresh,S*.012));
+      sk.blobs.forEach(([x,y,r])=>dabs(c,R,x,y,r,r*.9,cnt(r,.85),blossom,S*.011,'rgba(255,255,255,.8)'));
+    }else if(M===5){ // the blossom is falling, fresh leaves take over
+      sk.blobs.forEach(([x,y,r])=>disc(c,x,y+r*.12,r*.85,'rgba(70,120,40,.55)'));
+      sk.blobs.forEach(([x,y,r])=>dabs(c,R,x,y,r,r*.95,cnt(r,1.1),fresh,S*.013,'rgba(230,250,190,.45)'));
+      sk.blobs.forEach(([x,y,r])=>dabs(c,R,x,y,r*.95,r*.85,cnt(r,.22),blossom,S*.009));
+    }else if(M>=6&&M<=9){
+      const cols=M===6?['#3e7a2a','#4e8c32','#5e9e3c','#74b04a','#8cc25a','#a2d06a']:M===9?['#3a6a28','#4e7c30','#647e34','#7e9a3e','#a0a848','#c0b04e']:['#2c5a22','#3a6e2a','#4a8034','#5e9440','#74a84c','#8cbc5c'];
+      sk.blobs.forEach(([x,y,r])=>disc(c,x,y+r*.12,r*.9,M===6?'#346a24':'#2a5220'));
       sk.blobs.forEach(([x,y,r])=>dabs(c,R,x,y,r,r*.95,cnt(r,1.4),cols,S*.014,'rgba(220,240,160,.4)'));
-      for(let i=0;i<46;i++){const b=sk.blobs[R()*sk.blobs.length|0],a=R()*TAU,k=Math.sqrt(R())*.85,x=b[0]+Math.cos(a)*b[2]*k,y=b[1]+Math.sin(a)*b[2]*k,r=S*.017;disc(c,x,y,r,R()<.75?'#d8352a':'#a8c43a');disc(c,x-r*.3,y-r*.35,r*.3,'rgba(255,255,255,.5)')}
-    }else if(season==='autumn'){
+      if(M===6)apples(36,['#9cc040','#aac84a','#8ab038'],.01);
+      else if(M===7)apples(46,['#d8352a','#d8352a','#d8352a','#a8c43a'],.017);
+      else if(M===8)apples(56,['#d8352a','#c82a20','#e04a30','#d8352a','#b8c43a'],.018);
+      else apples(74,['#d8352a','#c8281e','#e85a3a','#d8352a'],.02);
+    }else if(M===10){
+      const cols=['#a8401e','#c8582a','#de7a2e','#e8a030','#f2c84a','#b89a3a'];
       sk.blobs.forEach(([x,y,r])=>dabs(c,R,x,y,r,r*.95,cnt(r,.7),cols,S*.014,'rgba(255,240,180,.45)'));
-      for(let i=0;i<22;i++){const b=sk.blobs[R()*sk.blobs.length|0],a=R()*TAU,k=Math.sqrt(R())*.8,x=b[0]+Math.cos(a)*b[2]*k,y=b[1]+Math.sin(a)*b[2]*k,r=S*.018;disc(c,x,y,r,'#c8281e');disc(c,x-r*.3,y-r*.35,r*.3,'rgba(255,255,255,.5)')}
-    }else{
-      c.lineCap='round';sk.segs.slice(1).forEach(s=>{const dx=s.x2-s.x,dy=s.y2-s.y;if(Math.abs(dy)>Math.abs(dx)*1.4)return;const w=(s.w+s.w2)/2;c.strokeStyle='#fbfdff';c.lineWidth=Math.max(1.4,w*.45);c.beginPath();c.moveTo(s.x,s.y-s.w*.42);c.quadraticCurveTo(s.cx,s.cy-w*.45,s.x2,s.y2-s.w2*.42);c.stroke()});
-      c.fillStyle='#fbfdff';c.beginPath();c.ellipse(S*.012,-S*.29,S*.05,S*.013,0,Math.PI,TAU);c.fill();
-      [[-.2,-.55],[.2,-.6],[.04,-.76]].forEach(([dx,dy])=>{disc(c,dx*S,dy*S,S*.012,'#8a3a26');c.strokeStyle='#4a3628';c.lineWidth=1;c.beginPath();c.moveTo(dx*S,dy*S-S*.012);c.lineTo(dx*S,dy*S-S*.03);c.stroke()});
+      apples(22,['#c8281e'],.018);
+    }else if(M===11){ // most leaves have fallen; a few brown ones and the last apples hang on
+      sk.blobs.forEach(([x,y,r])=>dabs(c,R,x,y,r,r*.9,cnt(r,.035),['#8a5a2a','#a8642a','#b88a3a','#7a4a24','#c8a050'],S*.012));
+      shrivelled();
+    }else{ // winter months
+      snowBranches(M===1?1:M===12?.7:.35);shrivelled();
     }
   });
   sp.sk=sk;return sp;
@@ -6619,6 +6660,7 @@ function appleTreeSprite(R,S,season){
 function smallOrchardTree(c,R,x,y,s,season){
   c.fillStyle='#5a4230';c.fillRect(x-s*.06,y-s*.5,s*.12,s*.5);
   c.strokeStyle='#5a4230';c.lineWidth=s*.05;[[-.3,-.75],[.28,-.8],[0,-.95]].forEach(([dx,dy])=>{c.beginPath();c.moveTo(x,y-s*.45);c.lineTo(x+dx*s,y+dy*s);c.stroke()});
+  if(season==='winterbare')return;
   if(season==='winter'){c.strokeStyle='rgba(255,255,255,.8)';c.lineWidth=s*.03;[[-.3,-.77],[.28,-.82],[0,-.97]].forEach(([dx,dy])=>{c.beginPath();c.moveTo(x,y-s*.47);c.lineTo(x+dx*s,y+dy*s);c.stroke()});return}
   const cols={spring:['#f8d4e0','#ffffff','#f2bfd0','#9cc86a'],summer:['#3e7a2c','#4e8a34','#5e9a3c'],autumn:['#d8782a','#e8a030','#c8582a','#a8a03a']}[season];
   if(season==='summer')disc(c,x,y-s*.82,s*.42,'#3a6e28');
@@ -6626,7 +6668,7 @@ function smallOrchardTree(c,R,x,y,s,season){
 }
 SCENES.seasons={
   bg(c,R){
-    const se=curSeason(),P=SZ[se];
+    const se=curSeason(),M=curMonth(),P=szPal(se,M);
     skyFill(c,P.sky,H*.58);
     sunGlow(c,W*P.sun[0],H*P.sun[1],H*P.sun[2],P.sun[3],P.sun[4]);
     c.strokeStyle='rgba(255,255,255,.35)';c.lineCap='round';for(let i=0;i<6;i++){const x=R()*W,y=H*(.06+R()*.18),l=W*(.06+R()*.12);c.lineWidth=2+R()*3;c.beginPath();c.moveTo(x,y);c.quadraticCurveTo(x+l*.5,y-H*.01,x+l,y+H*.004);c.stroke()}
@@ -6637,33 +6679,49 @@ SCENES.seasons={
     const vx=W*.42,vy=y1(vx);c.fillStyle=se==='winter'?'#e8eef4':'#ece4d4';c.fillRect(vx,vy-H*.045,H*.016,H*.05);c.beginPath();c.moveTo(vx-H*.002,vy-H*.045);c.lineTo(vx+H*.008,vy-H*.075);c.lineTo(vx+H*.018,vy-H*.045);c.fillStyle='#7a8a8a';c.fill();
     [[-.02,.014],[.018,.012],[.035,.013]].forEach(([dx,s])=>{const X=vx+W*dx,Y=y1(X)+H*.003;c.fillStyle=se==='winter'?'#eef2f6':'#e8e0d0';c.fillRect(X,Y-H*s,H*s*1.3,H*s+H*.006);c.beginPath();c.moveTo(X-1,Y-H*s);c.lineTo(X+H*s*.65,Y-H*s*1.6);c.lineTo(X+H*s*1.3+1,Y-H*s);c.fillStyle=se==='winter'?'#f6f8fa':'#c0786a';c.fill()});
     hazeBand(c,H*.42,H*.58,se==='autumn'?'246,232,206':'238,244,240',0,.4);
+    if(M===8)for(let i=0;i<22;i++){const x=W*(.03+R()*.94),y=y1(x)+H*(.006+R()*.03),s=H*.005;ell(c,x,y,s*1.3,s,0,'#d8b860');ell(c,x-s*.3,y-s*.2,s*.6,s*.5,0,'rgba(255,240,180,.6)')}
     const y2=fieldHill(c,R,.57,.02,5,P.meadow[0][1],P.fields.slice().reverse(),.1);
     // hedgerow and distant orchard trees
     if(se==='winter'){for(let x=-W*.02;x<W*1.02;x+=W*.009){const s=H*(.013+R()*.009),y=y2(x)-s*.4;dabs(c,R,x,y,s,s*.8,10,['#6e6660','#7e766e','#8a827a'],s*.3);ell(c,x,y-s*.45,s*.95,s*.42,0,'rgba(250,252,255,.95)')}
       c.strokeStyle='rgba(100,88,78,.55)';c.lineWidth=1;for(let x=0;x<W;x+=W*.012){const y=y2(x)-H*.02;c.beginPath();c.moveTo(x,y);c.lineTo(x+(R()-.5)*8,y-H*.012);c.stroke()}}
     else for(let x=-W*.02;x<W*1.02;x+=W*.009){const s=H*(.013+R()*.009);dabs(c,R,x,y2(x)-s*.4,s,s*.8,12,P.hedge,s*.35)}
     if(se==='winter')for(let x=0;x<W;x+=W*.01)ell(c,x,y2(x)-H*.018,H*.011,H*.0045,0,'rgba(255,255,255,.95)');
-    [[.07,.615,.08],[.2,.605,.065],[.33,.6,.05],[.86,.6,.06],[.96,.61,.075]].forEach(([x,y,s])=>smallOrchardTree(c,R,W*x,H*y,H*s,se));
+    const smallSe=M===3||M===11?'bare':M===9?'summer':se;
+    [[.07,.615,.08],[.2,.605,.065],[.33,.6,.05],[.86,.6,.06],[.96,.61,.075]].forEach(([x,y,s])=>smallOrchardTree(c,R,W*x,H*y,H*s,smallSe==='bare'?'winterbare':smallSe));
+    if(P.fog){for(let i=0;i<4;i++){const y=H*(.5+i*.04);c.save();c.translate(W*(.2+i*.22),y);c.scale(1,.08);disc(c,0,0,W*.4,rad(c,0,0,W*.4,[[0,'rgba(236,236,232,.55)'],[1,'rgba(236,236,232,0)']]));c.restore()}hazeBand(c,H*.45,H*.66,'232,232,228',.1,.35)}
     // the near meadow
     const g=hillLine(c,R,.62,.006,8,lin(c,H*.6,H,P.meadow));
-    if(se==='winter'){softPatches(c,R,H*.64,H,18,'rgba(150,180,215,.28)','rgba(255,255,255,.7)');snowTex(c,R,H*.64,H)}
+    if(se==='winter'){softPatches(c,R,H*.64,H,18,'rgba(150,180,215,.28)','rgba(255,255,255,.7)');snowTex(c,R,H*.64,H);if(M===2){softPatches(c,R,H*.66,H,22,'rgba(110,140,80,.45)','rgba(140,160,100,.4)');fineGrass(c,R,H*.66,H,300,'rgba(90,120,60,.4)','rgba(170,190,120,.35)')}}
     else{softPatches(c,R,H*.64,H,16,se==='autumn'?'rgba(150,110,40,.22)':'rgba(50,100,30,.2)','rgba(240,250,190,.22)');fineGrass(c,R,H*.62,H,1600,P.grassD,P.grassL)}
-    // flowers, leaves or snow under the tree
-    const flowers={spring:['#ffffff','#fff3a0','#f6d23a','#b8a0f0','#ffffff','#f8c8d8'],summer:['#e8352a','#4a7ad8','#ffffff','#f2c23a','#c86ab8'],autumn:['#c8281e','#e8a030','#d8782a','#a8401e','#f2c84a'],winter:['rgba(255,255,255,.9)']}[se];
-    const n=se==='autumn'?520:se==='winter'?0:300;
-    for(let i=0;i<n;i++){const y=H*(.63+Math.pow(R(),1.1)*.37),x=se==='autumn'&&R()<.6?W*(.64+(R()-.5)*.6):R()*W,s=(1.2+R()*1.8)*(.5+(y/H-.6)*3);
-      if(se==='autumn'){c.save();c.translate(x,y);c.rotate(R()*TAU);c.fillStyle=flowers[i%flowers.length];c.beginPath();c.ellipse(0,0,s*1.4,s*.7,0,0,TAU);c.fill();c.restore()}
-      else if(se==='spring'&&i%3===0){for(let k=0;k<6;k++){const a=k*TAU/6;disc(c,x+Math.cos(a)*s*.8,y+Math.sin(a)*s*.45,s*.55,'#fbfbf6')}disc(c,x,y,s*.5,'#f2c23a')}
-      else disc(c,x,y,s*.8,flowers[i%flowers.length])}
-    if(se==='spring')for(let i=0;i<180;i++){const x=W*(.64+(R()-.5)*.55),y=H*(.74+R()*.12);ell(c,x,y,2+R()*2,1.2,R()*3,R()<.5?'rgba(255,255,255,.9)':'rgba(248,200,220,.9)')}
-    if(se==='summer'||se==='autumn')for(let i=0;i<(se==='autumn'?9:4);i++){const x=W*(.58+(R()-.5)*.4),y=H*(.79+R()*.06),r=H*.008;disc(c,x,y,r,se==='autumn'&&i%3===0?'#8a5a2a':'#c8281e');disc(c,x-r*.3,y-r*.35,r*.3,'rgba(255,255,255,.5)')}
-    if(se==='autumn'){[[.3,.84],[.34,.86],[.92,.9]].forEach(([x,y],i)=>{const X=W*x,Y=H*y,s=H*.014*(1+i*.1);c.fillStyle='#f2e8d8';c.fillRect(X-s*.25,Y-s,s*.5,s);ell(c,X,Y-s,s,s*.5,0,i%2?'#c8382a':'#a8642a');if(i%2===0)[[-.4,-.1],[.3,-.2]].forEach(([a,b])=>disc(c,X+a*s,Y-s+b*s,s*.12,'#fbf4e6'))})}
+    // flowers, leaves, fruit or snow under the tree: a little different every month
+    const dot=(x,y,r,col)=>disc(c,x,y,r,col);
+    const scatter=(n,f)=>{for(let i=0;i<n;i++){const y=H*(.63+Math.pow(R(),1.1)*.37),x=R()*W,s=(1.2+R()*1.8)*(.5+(y/H-.6)*3);if(Math.abs(x/W-BROOK_X(y/H))<brookW(y/H)*.7)continue;f(x,y,s,i)}};
+    const daisy=(x,y,s)=>{for(let k=0;k<6;k++){const a=k*TAU/6;disc(c,x+Math.cos(a)*s*.8,y+Math.sin(a)*s*.45,s*.55,'#fbfbf6')}disc(c,x,y,s*.5,'#f2c23a')};
+    const leafy=(x,y,s,cols)=>{c.save();c.translate(x,y);c.rotate(R()*TAU);c.fillStyle=cols[(R()*cols.length)|0];c.beginPath();c.ellipse(0,0,s*1.4,s*.7,0,0,TAU);c.fill();c.restore()};
+    const under=(n,f)=>{for(let i=0;i<n;i++)f(W*(.64+(R()-.5)*.55),H*(.74+R()*.12))};
+    if(M===2)scatter(70,(x,y,s)=>{c.strokeStyle='#5a8a4a';c.lineWidth=1;c.beginPath();c.moveTo(x,y);c.lineTo(x,y-s*3);c.stroke();ell(c,x+s*.4,y-s*2.6,s*.45,s*.85,.3,'#ffffff')});
+    else if(M===3)scatter(220,(x,y,s,i)=>{if(i%4===0){c.strokeStyle='#6a9a4a';c.lineWidth=1;c.beginPath();c.moveTo(x,y);c.lineTo(x,y-s*2.4);c.stroke();ell(c,x,y-s*2.6,s*.55,s*1.1,0,['#a888e0','#ffffff','#f2c83a','#c8a8f0'][i%4===0?(i/4|0)%4:0])}else dot(x,y,s*.5,'rgba(120,110,70,.4)')});
+    else if(M===4)scatter(300,(x,y,s,i)=>i%3===0?daisy(x,y,s):dot(x,y,s*.8,['#ffffff','#fff3a0','#f6d23a','#b8a0f0','#ffffff','#f8c8d8'][i%6]));
+    else if(M===5){scatter(360,(x,y,s,i)=>i%2?dot(x,y,s*.9,'#f6d01e'):i%5===0?daisy(x,y,s):dot(x,y,s*.7,'#ffffff'));under(260,(x,y)=>ell(c,x,y,2+R()*2,1.2,R()*3,R()<.5?'rgba(255,255,255,.9)':'rgba(248,200,220,.9)'))}
+    else if(M===6)scatter(380,(x,y,s,i)=>i%3===0?daisy(x,y,s):dot(x,y,s*.8,['#e8352a','#f6d01e','#ffffff','#b8a0f0'][i%4]));
+    else if(M===7)scatter(300,(x,y,s,i)=>dot(x,y,s*.8,['#e8352a','#4a7ad8','#ffffff','#f2c23a','#c86ab8'][i%5]));
+    else if(M===8)scatter(140,(x,y,s,i)=>dot(x,y,s*.7,['#c8a050','#e8c870','#a86ab8','#ffffff'][i%4]));
+    else if(M===9)scatter(160,(x,y,s,i)=>i%3?leafy(x,y,s*.8,['#c8b04a','#a8a040','#d8a030']):dot(x,y,s*.8,['#9a7ad8','#b89ae8','#ffffff'][i%3]));
+    else if(M===10)scatter(520,(x,y,s,i)=>{const near=R()<.6;leafy(near?W*(.64+(R()-.5)*.6):x,y,s,['#c8281e','#e8a030','#d8782a','#a8401e','#f2c84a'])});
+    else if(M===11){scatter(700,(x,y,s)=>leafy(x,y,s,['#8a5a2a','#a8642a','#7a4a24','#b88a3a','#6a5a3a']));
+      [[.52,.83,.06],[.76,.81,.05],[.6,.88,.045]].forEach(([x,y,r])=>{for(let k=0;k<70;k++){const a=R()*Math.PI,q=Math.sqrt(R());leafy(W*x+Math.cos(a)*W*r*q,H*y-Math.sin(a)*H*r*.5*q,3+R()*2.4,['#8a5a2a','#a8642a','#c88a3a','#7a4a24'])}})}
+    // fallen apples from July to November
+    const fallen={7:4,8:7,9:14,10:9,11:5}[M]||0;
+    for(let i=0;i<fallen;i++){const x=W*(.58+(R()-.5)*.4),y=H*(.79+R()*.06),r=H*.008;disc(c,x,y,r,M>=10&&i%3===0?'#8a5a2a':'#c8281e');disc(c,x-r*.3,y-r*.35,r*.3,'rgba(255,255,255,.5)')}
+    if(M===10||M===11){[[.3,.84],[.34,.86],[.92,.9]].forEach(([x,y],i)=>{const X=W*x,Y=H*y,s=H*.014*(1+i*.1);c.fillStyle='#f2e8d8';c.fillRect(X-s*.25,Y-s,s*.5,s);ell(c,X,Y-s,s,s*.5,0,i%2?'#c8382a':'#a8642a');if(i%2===0)[[-.4,-.1],[.3,-.2]].forEach(([a,b])=>disc(c,X+a*s,Y-s+b*s,s*.12,'#fbf4e6'))})}
+    // round hay bales on the meadow in August
+    if(M===8)[[.42,.7,.03],[.47,.72,.035],[.88,.7,.028]].forEach(([x,y,s])=>{const X=W*x,Y=H*y,r=H*s;ell(c,X,Y+r*.9,r*1.1,r*.2,0,'rgba(80,70,30,.25)');disc(c,X,Y,r,'#d8b860');disc(c,X,Y,r*.72,'#e8cc78');c.strokeStyle='rgba(150,120,50,.6)';c.lineWidth=1.2;for(let k=1;k<4;k++){c.beginPath();c.arc(X,Y,r*k*.22,0,TAU);c.stroke()}});
     // the brook
     const pts=[];for(let y=.705;y<=1.02;y+=.01)pts.push([BROOK_X(y),y]);
     c.beginPath();pts.forEach(([x,y],i)=>{const X=W*(x-brookW(y)/2),Y=H*y;i?c.lineTo(X,Y):c.moveTo(X,Y)});for(let i=pts.length-1;i>=0;i--){const [x,y]=pts[i];c.lineTo(W*(x+brookW(y)/2),H*y)}c.closePath();
-    c.fillStyle=se==='winter'?lin(c,H*.7,H,[[0,'#cfe2ee'],[1,'#b0cfe2']]):lin(c,H*.7,H,[[0,'#8ec0d8'],[1,'#5a96b8']]);c.fill();
-    c.strokeStyle=se==='winter'?'rgba(255,255,255,.9)':'rgba(120,100,70,.45)';c.lineWidth=2.4;c.stroke();
-    if(se==='winter'){c.strokeStyle='rgba(255,255,255,.7)';c.lineWidth=1;for(let i=0;i<14;i++){const y=.72+R()*.28,x=BROOK_X(y)+(R()-.5)*brookW(y)*.6;c.beginPath();c.moveTo(W*x,H*y);c.lineTo(W*(x+brookW(y)*.25),H*(y+.01));c.stroke()}
+    const frozen=M===12||M===1;c.fillStyle=frozen?lin(c,H*.7,H,[[0,'#cfe2ee'],[1,'#b0cfe2']]):lin(c,H*.7,H,[[0,'#8ec0d8'],[1,'#5a96b8']]);c.fill();
+    c.strokeStyle=se==='winter'?'rgba(255,255,255,.9)':'rgba(120,100,70,.45)';c.lineWidth=se==='winter'?4:2.4;c.stroke();
+    if(se==='winter'){c.strokeStyle='rgba(255,255,255,.7)';c.lineWidth=1;for(let i=0;i<(frozen?14:0);i++){const y=.72+R()*.28,x=BROOK_X(y)+(R()-.5)*brookW(y)*.6;c.beginPath();c.moveTo(W*x,H*y);c.lineTo(W*(x+brookW(y)*.25),H*(y+.01));c.stroke()}
       // hare tracks in the snow
       for(let i=0;i<9;i++){const x=W*(.36+i*.035),y=H*(.9-i*.012);ell(c,x,y,3,5,.3,'rgba(130,160,200,.5)');ell(c,x+6,y+2,3,5,.3,'rgba(130,160,200,.5)')}}
     else for(let i=0;i<10;i++){const y=.73+R()*.26;[[-1],[1]].forEach(([s])=>{const x=BROOK_X(y)+s*brookW(y)*.55;grassBlade(c,W*x,H*y,H*(.015+R()*.02),(R()-.5)*8,se==='autumn'?'#8a8a3a':'#4e8a2e',2)})}
@@ -6671,18 +6729,22 @@ SCENES.seasons={
     [[.47,.92,.026],[.86,.82,.018]].forEach(([x,y,s])=>{boulder(c,W*x,H*y,H*s,'#8e8a84','#b6b2aa','#6e6a64');if(se==='winter')ell(c,W*x,H*y-H*s*.85,H*s*.85,H*s*.28,0,'rgba(255,255,255,.95)')});
     // shadow of the big tree
     const X=W*SZ_TREE.x,Y=H*SZ_TREE.y,S=H*SZ_TREE.s;c.save();c.translate(X+S*.08,Y+H*.005);c.scale(1,.08);disc(c,0,0,S*.55,rad(c,0,0,S*.55,[[0,se==='winter'?'rgba(80,110,150,.25)':'rgba(30,50,15,.32)'],[1,'rgba(0,0,0,0)']]));c.restore();
-    if(se==='spring')[[.87,.79],[.925,.8]].forEach(([x,y],i)=>{const X2=W*x,Y2=H*y,s=H*.07;ell(c,X2,Y2,s*.6,s*.1,0,'rgba(40,60,20,.25)');c.fillStyle='#f2e6c8';c.fillRect(X2-s*.4,Y2-s*.9,s*.8,s*.9);[0,1,2].forEach(k=>{c.fillStyle=['#e8b84a','#d8a03a','#f2c860'][(k+i)%3];c.fillRect(X2-s*.42,Y2-s*.9+k*s*.3,s*.84,s*.27)});c.fillStyle='#8a6a48';c.fillRect(X2-s*.48,Y2-s*1.0,s*.96,s*.12);c.fillStyle='#3a2a1a';c.fillRect(X2-s*.1,Y2-s*.18,s*.2,s*.05)});
+    // a snowman in January
+    if(M===1){const X2=W*.44,Y2=H*.86,s=H*.03;ell(c,X2,Y2+s*.1,s*1.6,s*.25,0,'rgba(120,150,200,.3)');disc(c,X2,Y2-s,s*1.2,'#fbfdff');disc(c,X2,Y2-s*2.6,s*.85,'#fbfdff');disc(c,X2,Y2-s*3.7,s*.6,'#fbfdff');c.fillStyle='#2a2a30';c.fillRect(X2-s*.5,Y2-s*4.35,s,s*.12);c.fillRect(X2-s*.32,Y2-s*4.95,s*.64,s*.62);disc(c,X2-s*.2,Y2-s*3.8,s*.07,'#2a2a30');disc(c,X2+s*.2,Y2-s*3.8,s*.07,'#2a2a30');c.fillStyle='#f2862a';c.beginPath();c.moveTo(X2,Y2-s*3.65);c.lineTo(X2+s*.5,Y2-s*3.55);c.lineTo(X2,Y2-s*3.5);c.fill();c.strokeStyle='#d8352a';c.lineWidth=s*.22;c.beginPath();c.moveTo(X2-s*.55,Y2-s*3.15);c.quadraticCurveTo(X2,Y2-s*2.95,X2+s*.55,Y2-s*3.15);c.stroke();[2.3,2.7].forEach(k=>disc(c,X2,Y2-s*k,s*.08,'#2a2a30'));c.strokeStyle='#5a3a24';c.lineWidth=1.6;c.beginPath();c.moveTo(X2-s*.8,Y2-s*2.7);c.lineTo(X2-s*1.7,Y2-s*3.3);c.moveTo(X2+s*.8,Y2-s*2.7);c.lineTo(X2+s*1.6,Y2-s*3.2);c.stroke()}
+    if(M===4||M===5)[[.87,.79],[.925,.8]].forEach(([x,y],i)=>{const X2=W*x,Y2=H*y,s=H*.07;ell(c,X2,Y2,s*.6,s*.1,0,'rgba(40,60,20,.25)');c.fillStyle='#f2e6c8';c.fillRect(X2-s*.4,Y2-s*.9,s*.8,s*.9);[0,1,2].forEach(k=>{c.fillStyle=['#e8b84a','#d8a03a','#f2c860'][(k+i)%3];c.fillRect(X2-s*.42,Y2-s*.9+k*s*.3,s*.84,s*.27)});c.fillStyle='#8a6a48';c.fillRect(X2-s*.48,Y2-s*1.0,s*.96,s*.12);c.fillStyle='#3a2a1a';c.fillRect(X2-s*.1,Y2-s*.18,s*.2,s*.05)});
   },
   props(R){
-    const se=curSeason(),P=SZ[se],X=W*SZ_TREE.x,Y=H*SZ_TREE.y,S=H*SZ_TREE.s,tree=appleTreeSprite(rng(77),S,se);
-    const fall=Array.from({length:se==='winter'?90:se==='summer'?0:40},()=>({x:R(),o:R(),v:.02+R()*.03,s:.6+R()*.9,ph:R()*6,col:se==='autumn'?['#c8281e','#e8a030','#d8782a','#f2c84a'][R()*4|0]:R()<.5?'#ffffff':'#f8c8da'}));
-    const fluff=se==='summer'?Array.from({length:10},()=>({x:R(),o:R(),v:.008+R()*.01,ph:R()*6})):[];
-    const glints=se==='winter'?[]:Array.from({length:12},()=>({y:.73+R()*.26,ph:R()*6}));
+    const se=curSeason(),M=curMonth(),P=szPal(se,M),X=W*SZ_TREE.x,Y=H*SZ_TREE.y,S=H*SZ_TREE.s,tree=appleTreeSprite(rng(77),S,se,M);
+    const fallN={1:90,2:30,3:0,4:40,5:60,6:0,7:0,8:0,9:12,10:40,11:14,12:90}[M];
+    const fall=Array.from({length:fallN},()=>({x:R(),o:R(),v:.02+R()*.03,s:.6+R()*.9,ph:R()*6,col:M===9?['#c8b04a','#a8a040','#d8a030'][R()*3|0]:M===11?['#8a5a2a','#a8642a','#7a4a24'][R()*3|0]:se==='autumn'?['#c8281e','#e8a030','#d8782a','#f2c84a'][R()*4|0]:R()<.5?'#ffffff':'#f8c8da'}));
+    const fluff=M===5||M===6||M===7?Array.from({length:10},()=>({x:R(),o:R(),v:.008+R()*.01,ph:R()*6})):[];
+    const glints=M===12||M===1?[]:Array.from({length:12},()=>({y:.73+R()*.26,ph:R()*6}));
+    const R2=Array.from({length:12},()=>R());
     const sway=t=>wind(t,X)*.004;
     const toTree=(t,px,py)=>{const a=sway(t),cs=Math.cos(a),sn=Math.sin(a);return [X+px*cs-py*sn,Y+px*sn+py*cs]};
     return [
       cloudProps(R,3,.06,.22,P.cloud,.35),
-      se==='autumn'?flockProps(R,7,.16,'rgba(60,60,70,.5)',110,1.1):se==='spring'?flockProps(R,4,.2,'rgba(60,60,70,.45)',90,.8):()=>{},
+      M===10||M===11||M===3?flockProps(R,M===3?9:7,.16,'rgba(60,60,70,.5)',110,1.1):se==='spring'||M===6?flockProps(R,4,.2,'rgba(60,60,70,.45)',90,.8):()=>{},
       (c,t)=>{c.strokeStyle='rgba(255,255,255,.7)';c.lineWidth=1.3;glints.forEach(g=>{c.globalAlpha=.6*Math.pow(Math.abs(Math.sin(t*.9+g.ph)),6);const x=W*BROOK_X(g.y);c.beginPath();c.moveTo(x-4,H*g.y);c.lineTo(x+4,H*g.y);c.stroke()});c.globalAlpha=1},
       (c,t)=>{c.save();c.translate(X,Y);c.rotate(sway(t));c.drawImage(tree.cv,-tree.w/2,-tree.h+S*.02,tree.w,tree.h);c.restore()},
       // the swing (spring to autumn) or a bird feeder (winter)
@@ -6690,20 +6752,33 @@ SCENES.seasons={
           c.strokeStyle='#3a2a1a';c.lineWidth=1.4;c.beginPath();c.moveTo(fx,fy);c.lineTo(bx,by);c.stroke();c.save();c.translate(bx,by);c.rotate(sw);const s=S*.05;
           c.fillStyle='#8a5a34';c.beginPath();c.moveTo(-s*.75,s*.15);c.lineTo(0,-s*.3);c.lineTo(s*.75,s*.15);c.fill();c.fillStyle='#fbfdff';c.beginPath();c.moveTo(-s*.75,s*.12);c.lineTo(0,-s*.34);c.lineTo(s*.75,s*.12);c.lineTo(s*.6,s*.18);c.lineTo(0,-s*.22);c.lineTo(-s*.6,s*.18);c.fill();
           c.fillStyle='#c89a5a';c.fillRect(-s*.45,s*.15,s*.9,s*.55);c.fillStyle='#e8c870';c.fillRect(-s*.35,s*.45,s*.7,s*.22);c.fillStyle='#6a4a2a';c.fillRect(-s*.6,s*.68,s*1.2,s*.08);c.restore();return}
-        const [ax,ay]=toTree(t,tree.sk.swing[0],tree.sk.swing[1]+S*.01),sw=Math.sin(t*.7)*.08,L=Y-S*.09-ay,sx=ax+Math.sin(sw)*L,sy=ay+Math.cos(sw)*L,w=S*.075;
-        c.strokeStyle='#d8c8a0';c.lineWidth=1.6;[-1,1].forEach(k=>{c.beginPath();c.moveTo(ax+k*w*.85,ay);c.lineTo(sx+k*w*.85,sy);c.stroke()});
+        // both ropes are tied round the sloping limb: find where the limb is at each rope's x
+        const sg=tree.sk.swingSeg,w=S*.075,bez=q=>[(1-q)*(1-q)*sg.x+2*(1-q)*q*sg.cx+q*q*sg.x2,(1-q)*(1-q)*sg.y+2*(1-q)*q*sg.cy+q*q*sg.y2];
+        const onLimb=x=>{let best=null;for(let q=0;q<=1;q+=.01){const p=bez(q);if(!best||Math.abs(p[0]-x)<Math.abs(best[0]-x))best=p}const wq=sg.w+(sg.w2-sg.w)*.7;return [x,best[1]+wq*.35]};
+        const cx0=tree.sk.swing[0],tops=[onLimb(cx0-w*.85),onLimb(cx0+w*.85)].map(([x,y])=>toTree(t,x,y));
+        const seatY=Y-S*.09,sw=Math.sin(t*.7)*.08,mid=(tops[0][1]+tops[1][1])/2,L=seatY-mid,sx=(tops[0][0]+tops[1][0])/2+Math.sin(sw)*L,sy=mid+Math.cos(sw)*L;
+        c.strokeStyle='#d8c8a0';c.lineWidth=1.6;tops.forEach(([tx2,ty2],k)=>{const ex=sx+(k?1:-1)*w*.85*Math.cos(sw*.5),ey=sy+(k?1:-1)*w*.85*Math.sin(sw*.5);c.beginPath();c.moveTo(tx2,ty2);c.lineTo(ex,ey);c.stroke();
+          c.lineWidth=2;c.beginPath();c.ellipse(tx2,ty2-S*.004,S*.007,S*.01,0,0,TAU);c.stroke();c.lineWidth=1.6});
         c.save();c.translate(sx,sy);c.rotate(sw*.5);c.fillStyle='#8a5a34';c.fillRect(-w,-S*.006,w*2,S*.014);c.fillStyle='rgba(255,255,255,.18)';c.fillRect(-w,-S*.006,w*2,S*.004);c.restore()},
       // ladder and apple basket in autumn
-      se==='autumn'?(c=>{const lx=X+S*.12,ly=Y,lt=Y-S*.5,s=S*.02;c.strokeStyle='#a8865a';c.lineWidth=s*.5;c.lineCap='round';[[0],[s*2.2]].forEach(([d])=>{c.beginPath();c.moveTo(lx+d+S*.08,ly);c.lineTo(lx+d,lt);c.stroke()});for(let k=1;k<9;k++){const q=k/9;c.lineWidth=s*.35;c.beginPath();c.moveTo(lx+S*.08*(1-q),ly-(ly-lt)*q);c.lineTo(lx+s*2.2+S*.08*(1-q),ly-(ly-lt)*q);c.stroke()}
+      M===9||M===10?(c=>{const lx=X+S*.12,ly=Y,lt=Y-S*.5,s=S*.02;c.strokeStyle='#a8865a';c.lineWidth=s*.5;c.lineCap='round';[[0],[s*2.2]].forEach(([d])=>{c.beginPath();c.moveTo(lx+d+S*.08,ly);c.lineTo(lx+d,lt);c.stroke()});for(let k=1;k<9;k++){const q=k/9;c.lineWidth=s*.35;c.beginPath();c.moveTo(lx+S*.08*(1-q),ly-(ly-lt)*q);c.lineTo(lx+s*2.2+S*.08*(1-q),ly-(ly-lt)*q);c.stroke()}
         const bx=X+S*.3,by=Y+H*.012,bs=S*.05;ell(c,bx,by,bs*1.2,bs*.2,0,'rgba(40,30,10,.25)');c.fillStyle='#b8864a';c.beginPath();c.moveTo(bx-bs,by-bs*.9);c.lineTo(bx+bs,by-bs*.9);c.lineTo(bx+bs*.8,by);c.lineTo(bx-bs*.8,by);c.closePath();c.fill();c.strokeStyle='rgba(90,60,30,.6)';c.lineWidth=1;for(let k=1;k<4;k++){c.beginPath();c.moveTo(bx-bs*(1-k*.05),by-bs*.9+k*bs*.22);c.lineTo(bx+bs*(1-k*.05),by-bs*.9+k*bs*.22);c.stroke()}
         [[-.6,-.95],[-.2,-1.05],[.2,-1],[.6,-.95],[0,-1.25],[-.4,-1.2],[.4,-1.18]].forEach(([dx,dy])=>{disc(c,bx+dx*bs,by+dy*bs,bs*.28,'#c8281e');disc(c,bx+dx*bs-bs*.08,by+dy*bs-bs*.1,bs*.08,'rgba(255,255,255,.5)')})}):()=>{},
-      (c,t)=>{const w=wind(t,0)*3;const cl=(x,y,k)=>{const X=W*x,Y=H*y;
-          if(se==='spring')for(let i=0;i<k;i++){const dx=(i-k/2)*H*.018,h=H*(.06+(i%3)*.012);c.strokeStyle='#4e8a2e';c.lineWidth=2.2;c.beginPath();c.moveTo(X+dx,Y);c.quadraticCurveTo(X+dx+w*.4,Y-h*.6,X+dx+w,Y-h);c.stroke();const fx=X+dx+w,fy=Y-h;for(let j=0;j<6;j++){const a=j*TAU/6;ell(c,fx+Math.cos(a)*H*.007,fy+Math.sin(a)*H*.007,H*.007,H*.004,a,'#f8e070')}disc(c,fx,fy,H*.006,'#f2a030');disc(c,fx,fy,H*.003,'#e8802a')}
-          else if(se==='summer')for(let i=0;i<k;i++){const dx=(i-k/2)*H*.02,h=H*(.07+(i%3)*.015);c.strokeStyle='#5a8a3a';c.lineWidth=1.8;c.beginPath();c.moveTo(X+dx,Y);c.quadraticCurveTo(X+dx+w*.4,Y-h*.6,X+dx+w,Y-h);c.stroke();const fx=X+dx+w,fy=Y-h;[[-.3,0],[.3,0],[0,-.2],[0,.12]].forEach(([a,b],j)=>ell(c,fx+a*H*.014,fy+b*H*.014,H*.011,H*.009,0,j%2?'#e8352a':'#d42a20'));disc(c,fx,fy,H*.003,'#2a1a1a')}
-          else if(se==='autumn')for(let i=0;i<k;i++){const dx=(i-k/2)*H*.022,s=H*(.012+(i%2)*.006);c.fillStyle='#f2e8d8';c.fillRect(X+dx-s*.25,Y-s,s*.5,s);ell(c,X+dx,Y-s,s,s*.55,0,i%2?'#c8382a':'#a8642a');if(i%2)[[-.4,-.1],[.3,-.25]].forEach(([a,b])=>disc(c,X+dx+a*s,Y-s+b*s,s*.13,'#fbf4e6'))}
-          else for(let i=0;i<k;i++){const dx=(i-k/2)*H*.016,h=H*(.03+(i%2)*.01);c.strokeStyle='#5a7a4a';c.lineWidth=1.4;c.beginPath();c.moveTo(X+dx,Y);c.lineTo(X+dx+w*.5,Y-h);c.stroke();ell(c,X+dx+w*.5+2,Y-h+3,H*.004,H*.008,.3,'#fbfdff');ell(c,X+dx+w*.5-1,Y-h+4,H*.003,H*.006,-.4,'#f2f6fa')}};
+      (c,t)=>{const w=wind(t,0)*3;const stem=(x,y,h,col,lw)=>{c.strokeStyle=col;c.lineWidth=lw;c.beginPath();c.moveTo(x,y);c.quadraticCurveTo(x+w*.4,y-h*.6,x+w,y-h);c.stroke();return [x+w,y-h]};
+        const cl=(x,y,k)=>{const X=W*x,Y=H*y;for(let i=0;i<k;i++){const dx=(i-k/2)*H*.019,h=H*(.06+(i%3)*.012),bx=X+dx;
+          if(M===1||M===12){const [fx,fy]=stem(bx,Y,H*(.03+(i%2)*.01),'#6a5a4a',1.4);ell(c,fx+1,fy+2,H*.006,H*.004,0,'#fbfdff');if(M===12&&i%2===0){leaf(c,bx,Y-H*.02,H*.03,-2.4,'#2e5a2e');leaf(c,bx,Y-H*.02,H*.03,-.7,'#3a6a34');[[-.004,-.024],[.004,-.026],[0,-.03]].forEach(([a,b2])=>disc(c,bx+a*H,Y+b2*H,H*.004,'#d8281e'))}}
+          else if(M===2){const [fx,fy]=stem(bx,Y,H*(.03+(i%2)*.01),'#5a8a4a',1.4);ell(c,fx+2,fy+3,H*.004,H*.008,.3,'#fbfdff');ell(c,fx-1,fy+4,H*.003,H*.006,-.4,'#f2f6fa')}
+          else if(M===3){const [fx,fy]=stem(bx,Y,H*(.025+(i%2)*.008),'#6a9a4a',1.6);ell(c,fx,fy,H*.006,H*.012,0,['#9a78d8','#ffffff','#f2c83a','#b898e8'][i%4]);ell(c,fx-H*.002,fy-H*.003,H*.002,H*.006,0,'rgba(255,255,255,.4)')}
+          else if(M===4){const [fx,fy]=stem(bx,Y,h,'#4e8a2e',2.2);for(let j=0;j<6;j++){const a=j*TAU/6;ell(c,fx+Math.cos(a)*H*.007,fy+Math.sin(a)*H*.007,H*.007,H*.004,a,'#f8e070')}disc(c,fx,fy,H*.006,'#f2a030');disc(c,fx,fy,H*.003,'#e8802a')}
+          else if(M===5){const [fx,fy]=stem(bx,Y,h*1.1,'#5a8a3a',1.6);if(i%2){disc(c,fx,fy,H*.012,'rgba(255,255,255,.35)');c.strokeStyle='rgba(255,255,255,.85)';c.lineWidth=.7;for(let j=0;j<14;j++){const a=j*TAU/14;c.beginPath();c.moveTo(fx,fy);c.lineTo(fx+Math.cos(a)*H*.012,fy+Math.sin(a)*H*.012);c.stroke()}}else{for(let j=0;j<10;j++){const a=j*TAU/10;ell(c,fx+Math.cos(a)*H*.006,fy+Math.sin(a)*H*.006,H*.006,H*.0025,a,'#f6d01e')}}}
+          else if(M===6){const [fx,fy]=stem(bx,Y,h*1.1,'#5a8a3a',1.6);for(let j=0;j<12;j++){const a=j*TAU/12;ell(c,fx+Math.cos(a)*H*.009,fy+Math.sin(a)*H*.009,H*.008,H*.0028,a,'#fbfbf6')}disc(c,fx,fy,H*.005,'#f2c23a')}
+          else if(M===7){const [fx,fy]=stem(bx,Y,h*1.15,'#5a8a3a',1.8);[[-.3,0],[.3,0],[0,-.2],[0,.12]].forEach(([a,b2],j)=>ell(c,fx+a*H*.014,fy+b2*H*.014,H*.011,H*.009,0,j%2?'#e8352a':'#d42a20'));disc(c,fx,fy,H*.003,'#2a1a1a')}
+          else if(M===8){if(i%2)continue;const [fx,fy]=stem(bx,Y,h*2.2,'#5a7a2a',3);leaf(c,bx+w*.3,Y-h*.9,H*.03,-2.6,'#4e7a2a');leaf(c,bx+w*.4,Y-h*1.3,H*.03,-.5,'#5a8a30');for(let j=0;j<14;j++){const a=j*TAU/14;ell(c,fx+Math.cos(a)*H*.017,fy+Math.sin(a)*H*.017,H*.011,H*.004,a,'#f6c21e')}disc(c,fx,fy,H*.011,'#6a4022');disc(c,fx,fy,H*.006,'#4a2a16')}
+          else if(M===9){const [fx,fy]=stem(bx,Y,h,'#5a7a3a',1.4);for(let j=0;j<5;j++){const ax=fx+(j-2)*H*.006,ay=fy+Math.abs(j-2)*H*.004;for(let q=0;q<8;q++){const a=q*TAU/8;ell(c,ax+Math.cos(a)*H*.004,ay+Math.sin(a)*H*.004,H*.004,H*.0015,a,'#9a78d8')}disc(c,ax,ay,H*.0018,'#f2c23a')}}
+          else if(M===10){const s=H*(.012+(i%2)*.006);c.fillStyle='#f2e8d8';c.fillRect(bx-s*.25,Y-s,s*.5,s);ell(c,bx,Y-s,s,s*.55,0,i%2?'#c8382a':'#a8642a');if(i%2)[[-.4,-.1],[.3,-.25]].forEach(([a,b2])=>disc(c,bx+a*s,Y-s+b2*s,s*.13,'#fbf4e6'))}
+          else{const [fx,fy]=stem(bx,Y,h*1.2,'#8a7a5a',1.2);for(let j=0;j<6;j++)disc(c,fx+(R2[j]-.5)*H*.012,fy+R2[j+6]*H*.012,H*.0028,'#7a5a3a')}}};
         cl(.06,.99,5);cl(.95,.985,6);cl(.4,1.0,4)},
-      tuftProps(H*.66,H,se==='winter'?30:70,P.tufts,R,H*(se==='summer'?.05:.035),(x,y)=>Math.abs(x/W-BROOK_X(y/H))<brookW(y/H)*.9),
+      tuftProps(H*.66,H,M===1||M===12?20:M===2?40:70,P.tufts,R,H*(se==='summer'?.05:.035),(x,y)=>Math.abs(x/W-BROOK_X(y/H))<brookW(y/H)*.9),
       (c,t)=>{fall.forEach(f=>{const q=(t*f.v+f.o)%1,y=-H*.05+q*H*1.05,x=((f.x*W+Math.sin(t*1.1+f.ph)*30+t*(se==='winter'?6:14))%(W+40))-20;
         if(se==='winter'){c.fillStyle='rgba(255,255,255,.9)';c.beginPath();c.arc(x,y,f.s*1.6,0,TAU);c.fill();return}
         c.save();c.translate(x,y);c.rotate(Math.sin(t*2+f.ph)*1.2);c.fillStyle=f.col;c.beginPath();c.ellipse(0,0,f.s*(se==='autumn'?6:3.4),f.s*(se==='autumn'?3:2.2),0,0,TAU);c.fill();c.restore()});
